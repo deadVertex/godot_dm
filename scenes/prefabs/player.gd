@@ -7,6 +7,7 @@ export var jump_impulse: float = 12.0
 export var gravity: float = -20.0
 
 onready var head: Spatial = $Head
+onready var uzi_animations: AnimationPlayer = $Head/ViewModel/AnimationPlayer
 
 var velocity: Vector3 = Vector3.ZERO
 
@@ -23,6 +24,11 @@ func _physics_process(delta):
 	velocity.z = lerp(velocity.z, movement.z * speed, acceleration * delta)
 	velocity.y += gravity * delta
 	velocity = move_and_slide(velocity, Vector3.UP)
+
+	if Input.is_action_pressed("fire"):
+		uzi_animations.play("Uzi_Fire")
+	else:
+		uzi_animations.play("Uzi_Idle")
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
