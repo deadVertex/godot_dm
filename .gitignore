@@ -1,2 +1,5 @@
 # Tools contains all binaries for our toolchain, just download from the internet
 tools/**
+
+# Import directory for Godot
+.import/**
