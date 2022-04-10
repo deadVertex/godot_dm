@@ -1,6 +1,10 @@
 extends KinematicBody
 
 export var camera_sensitivity: float = 0.05
+export var speed: float = 13.0
+export var acceleration: float = 6.0
+export var jump_impulse: float = 12.0
+export var gravity: float = -20.0
 
 onready var head: Spatial = $Head
 
@@ -12,8 +16,13 @@ func _ready():
 func _physics_process(delta):
 	var movement = _get_movement_direction()
 
-	velocity = movement
-	velocity = move_and_slide(velocity)
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = jump_impulse
+
+	velocity.x = lerp(velocity.x, movement.x * speed, acceleration * delta)
+	velocity.z = lerp(velocity.z, movement.z * speed, acceleration * delta)
+	velocity.y += gravity * delta
+	velocity = move_and_slide(velocity, Vector3.UP)
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
@@ -36,4 +45,4 @@ func _get_movement_direction():
 	if Input.is_action_pressed("move_right"):
 		direction += transform.basis.x
 
-	return direction
+	return direction.normalized()
