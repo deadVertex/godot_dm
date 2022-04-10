@@ -14,3 +14,8 @@ Messing around with Godot, making a basic multiplayer death match game.
    [GitHub](https://github.com/godotengine/godot/releases/download/3.4.4-stable/Godot_v3.4.4-stable_win64.exe.zip).
 2. Extract zip archive into the tools directory.
 3. Test `.\tools\Godot_v3.4.4-stable_win64.exe\Godot_v3.4.4-stable_win64.exe --version`
+
+## Attributions
+
+See [attributions.md](./attributions.md)
+
