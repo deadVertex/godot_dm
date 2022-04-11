@@ -10,7 +10,7 @@ albedo_texture = ExtResource( 4 )
 
 [node name="TestMap" type="Spatial"]
 
-[node name="KinematicBody" parent="." instance=ExtResource( 2 )]
+[node name="Player" parent="." instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.813631, 1.58717, 4.33607 )
 
 [node name="CSGCombiner" type="CSGCombiner" parent="."]
