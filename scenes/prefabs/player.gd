@@ -8,13 +8,13 @@ export var acceleration: float = 6.0
 export var jump_impulse: float = 12.0
 export var gravity: float = -20.0
 
-onready var head: Spatial = $Head
-onready var uzi_animations: AnimationPlayer = $Head/ViewModel/AnimationPlayer
-
 var velocity: Vector3 = Vector3.ZERO
 
 # TODO: Make this editor configurable
 var _bullet_hole_prefab = preload("res://scenes/prefabs/bullet_hole.tscn")
+
+onready var head: Spatial = $Head
+onready var uzi_animations: AnimationPlayer = $Head/ViewModel/AnimationPlayer
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -60,7 +60,7 @@ func _spawn_bullet_hole(position: Vector3, normal: Vector3):
 		up = Vector3.RIGHT
 
 	bullet_hole.look_at_from_position(position + normal * BULLET_HOLE_OFFSET,
-									  position + normal, up)
+		position + normal, up)
 	get_tree().get_root().add_child(bullet_hole)
 
 func _get_movement_direction():
