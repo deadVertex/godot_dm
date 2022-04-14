@@ -10,7 +10,13 @@ Messing around with Godot, making a basic multiplayer death match game.
 
 Run `scripts/setup_linux.sh` to download and setup the correct version of Godot.
 
-### Manual setup steps **WINDOWS**:
+#### GD Script Linting
+
+1. Create and activate a new python 3.8 (or newer) virtual environment
+2. `pip install -r requirements.txt`
+3. Run `./scripts/lint_gdscript.sh`
+
+### Windows
 
 **TODO** Script this setup so its easily reproducible in the future.
 

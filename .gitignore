@@ -3,3 +3,6 @@ tools/**
 
 # Import directory for Godot
 .import/**
+
+# Python virtualenv directory
+venv
