@@ -16,8 +16,10 @@ var _bullet_hole_prefab = preload("res://scenes/prefabs/bullet_hole.tscn")
 onready var head: Spatial = $Head
 onready var uzi_animations: AnimationPlayer = $Head/ViewModel/AnimationPlayer
 
+
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
 
 func _physics_process(delta):
 	var movement = _get_movement_direction()
@@ -36,14 +38,17 @@ func _physics_process(delta):
 	else:
 		uzi_animations.play("Uzi_Idle")
 
+
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		_handle_camera_rotation(event)
 
+
 func _handle_camera_rotation(event):
 	rotate_y(deg2rad(-event.relative.x * camera_sensitivity))
 	head.rotate_x(deg2rad(-event.relative.y * camera_sensitivity))
-	head.rotation.x = clamp(head.rotation.x, -PI * 0.5, PI * 0.5);
+	head.rotation.x = clamp(head.rotation.x, -PI * 0.5, PI * 0.5)
+
 
 func _handle_shooting():
 	var space_state = get_world().direct_space_state
@@ -53,15 +58,18 @@ func _handle_shooting():
 	if !result.empty():
 		_spawn_bullet_hole(result["position"], result["normal"])
 
+
 func _spawn_bullet_hole(position: Vector3, normal: Vector3):
 	var bullet_hole = _bullet_hole_prefab.instance()
 	var up = Vector3.UP
 	if normal.dot(up) >= 0.99999:
 		up = Vector3.RIGHT
 
-	bullet_hole.look_at_from_position(position + normal * BULLET_HOLE_OFFSET,
-		position + normal, up)
+	bullet_hole.look_at_from_position(
+		position + normal * BULLET_HOLE_OFFSET, position + normal, up
+	)
 	get_tree().get_root().add_child(bullet_hole)
+
 
 func _get_movement_direction():
 	var direction = Vector3.DOWN
