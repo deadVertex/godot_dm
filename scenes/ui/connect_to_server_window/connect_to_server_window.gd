@@ -17,3 +17,4 @@ func _on_join_button_pressed():
 	var server_port = int(_port_line_edit.text)
 
 	emit_signal("connect_to_server", server_address, server_port)
+	hide()

@@ -10,6 +10,7 @@ const DEFAULT_MAX_CLIENTS: int = 8
 export var map: PackedScene
 onready var _world = $World
 onready var _network_transport = $NetworkTransport
+onready var _main_menu = $UI/MainMenu
 onready var _connect_to_server_window = $UI/MainMenu/ConnectToServerWindow
 
 
@@ -21,16 +22,18 @@ func _ready():
 			"client_connected", self, "_on_client_connected"
 		)
 		_network_transport.start_server(DEFAULT_PORT, DEFAULT_MAX_CLIENTS)
-
-	_connect_to_server_window.connect(
-		"connect_to_server", self, "_on_connect_to_server"
-	)
-	#_load_map()
+		_load_map()
+	else:
+		_connect_to_server_window.connect(
+			"connect_to_server", self, "_on_connect_to_server"
+		)
 
 
 func _on_connect_to_server(address: String, port: int):
+	_main_menu.hide()
 	print("Starting client")
 	_network_transport.connect_to_server(address, port)
+	_load_map()
 
 
 func _on_client_connected(id):
