@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://scenes/maps/TestMap.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/network_transport.gd" type="Script" id=3]
 [ext_resource path="res://scenes/ui/fps_display.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/ui/main_menu/main_menu.tscn" type="PackedScene" id=5]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -14,6 +15,8 @@ map = ExtResource( 2 )
 [node name="UI" type="Node" parent="."]
 
 [node name="FpsDisplay" parent="UI" instance=ExtResource( 4 )]
+
+[node name="MainMenu" parent="UI" instance=ExtResource( 5 )]
 
 [node name="NetworkTransport" type="Node" parent="."]
 script = ExtResource( 3 )
