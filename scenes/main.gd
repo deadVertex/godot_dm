@@ -24,6 +24,9 @@ func _ready():
 		_network_transport.start_server(DEFAULT_PORT, DEFAULT_MAX_CLIENTS)
 		_load_map()
 	else:
+		_network_transport.connect(
+			"connection_accepted", self, "_on_connection_accepted"
+		)
 		_connect_to_server_window.connect(
 			"connect_to_server", self, "_on_connect_to_server"
 		)
@@ -38,6 +41,10 @@ func _on_connect_to_server(address: String, port: int):
 
 func _on_client_connected(id):
 	print("Client connected: %d" % id)
+
+
+func _on_connection_accepted(id):
+	print("Connection accepted")
 
 
 func _parse_cmdline_args(args: PoolStringArray):

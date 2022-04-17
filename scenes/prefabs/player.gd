@@ -3,10 +3,10 @@ extends KinematicBody
 const BULLET_DISTANCE: float = 100.0
 const BULLET_HOLE_OFFSET: float = 0.001
 export var camera_sensitivity: float = 0.05
-export var speed: float = 13.0
-export var acceleration: float = 6.0
+export var speed: float = 120.0
 export var jump_impulse: float = 12.0
 export var gravity: float = -20.0
+export var friction: float = 8.0
 
 var velocity: Vector3 = Vector3.ZERO
 
@@ -27,8 +27,8 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = jump_impulse
 
-	velocity.x = lerp(velocity.x, movement.x * speed, acceleration * delta)
-	velocity.z = lerp(velocity.z, movement.z * speed, acceleration * delta)
+	velocity.x = velocity.x + movement.x * speed * delta - velocity.x * friction * delta
+	velocity.z = velocity.z + movement.z * speed * delta - velocity.z * friction * delta
 	velocity.y += gravity * delta
 	velocity = move_and_slide(velocity, Vector3.UP)
 
