@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scenes/prefabs/player.gd" type="Script" id=1]
 [ext_resource path="res://assets/meshes/kenny_nl_weapon_pack/uziLong.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://scenes/prefabs/blood_splatter_fx.tscn" type="PackedScene" id=3]
 
 [sub_resource type="Animation" id=6]
 resource_name = "Uzi_Fire"
@@ -49,6 +50,8 @@ material = SubResource( 4 )
 collision_layer = 2
 collision_mask = 3
 script = ExtResource( 1 )
+time_between_shots = 0.1
+blood_splatter_fx_prefab = ExtResource( 3 )
 
 [node name="Head" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.709785, -0.366209 )

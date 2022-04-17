@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+vertex_color_use_as_albedo = true
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id=2]
+material = SubResource( 1 )
+size = Vector2( 0.2, 0.2 )
+
+[sub_resource type="Curve" id=3]
+min_value = 0.8
+max_value = 1.8
+_data = [ Vector2( 0, 1.4365 ), 0.0, 0.0, 0, 0, Vector2( 0.729866, 0.840491 ), -1.97448, -1.97448, 0, 0, Vector2( 0.991611, 0 ), 0.0, 0.0, 0, 0 ]
+
+[node name="BloodSplatterFx" type="CPUParticles"]
+cast_shadow = 0
+emitting = false
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 1.0
+mesh = SubResource( 2 )
+flag_rotate_y = true
+direction = Vector3( 0, 0, -1 )
+initial_velocity = 10.0
+initial_velocity_random = 0.33
+angular_velocity = 10.0
+angular_velocity_random = 1.0
+damping = 6.17
+angle_random = 1.0
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 3 )
+color = Color( 0.298039, 0, 0, 1 )
+hue_variation_random = 0.1
+anim_speed = 10.0
+anim_speed_random = 1.0

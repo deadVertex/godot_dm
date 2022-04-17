@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://resources/materials/prototype/floor_dark.tres" type="Material" id=1]
 [ext_resource path="res://scenes/prefabs/player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://resources/materials/prototype/wall_orange.tres" type="Material" id=3]
 [ext_resource path="res://assets/textures/kenny_nl_prototype_textures/Green/texture_02.png" type="Texture" id=4]
+[ext_resource path="res://scenes/prefabs/bean_boi.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/prefabs/bean_boi_spawner.gd" type="Script" id=6]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 4 )
@@ -117,3 +119,11 @@ material = ExtResource( 1 )
 transform = Transform( 0.707107, -0.612372, -0.353553, 0, -0.5, 0.866025, -0.707107, -0.612372, -0.353553, 0, 11, 0 )
 shadow_enabled = true
 shadow_color = Color( 0.367859, 0.438795, 0.574219, 1 )
+
+[node name="BeanBoiSpawner" type="Node" parent="."]
+script = ExtResource( 6 )
+max_bois = 1
+bean_boi_scene = ExtResource( 5 )
+
+[node name="BeanBoiSpawnPoint" type="Spatial" parent="." groups=["bean_boi_spawns"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58755, -9.42203 )
