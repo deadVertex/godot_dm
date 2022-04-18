@@ -8,16 +8,30 @@ const DEFAULT_PORT: int = 18000
 const DEFAULT_MAX_CLIENTS: int = 8
 
 export var map: PackedScene
+
+var _is_server: bool = false
+
 onready var _world = $World
 onready var _network_transport = $NetworkTransport
 onready var _main_menu = $UI/MainMenu
 onready var _connect_to_server_window = $UI/MainMenu/ConnectToServerWindow
+onready var _player_spawner = $PlayerSpawner
+onready var _replication_server = $ReplicationServer
+onready var _replication_client = $ReplicationClient
+
+# TODO List
+# - System for clients to request player spawns
+# - Controller node for player which receives commands from the client and
+#   applies them to the player entity on the server
+# - Replicator node for player which receives state from the server and applies
+#   it to the player entities on the clients
 
 
 func _ready():
 	var args = _parse_cmdline_args(OS.get_cmdline_args())
 	if args["listen"]:
 		print("Starting server")
+		_is_server = true
 		_network_transport.connect(
 			"client_connected", self, "_on_client_connected"
 		)
@@ -36,15 +50,19 @@ func _on_connect_to_server(address: String, port: int):
 	_main_menu.hide()
 	print("Starting client")
 	_network_transport.connect_to_server(address, port)
-	_load_map()
 
 
 func _on_client_connected(id):
 	print("Client connected: %d" % id)
+	_replication_server.register_client(id)
 
 
 func _on_connection_accepted(id):
-	print("Connection accepted")
+	print("Connection accepted, id %d" % id)
+	_load_map()  # TODO: Ask server which map to load
+	# Request spawn
+	var request = {"type": "spawn_request"}
+	_network_transport.send_message_to_server(request)
 
 
 func _parse_cmdline_args(args: PoolStringArray):
@@ -60,3 +78,39 @@ func _load_map():
 	assert(map)
 	var scene = map.instance()
 	_world.add_child(scene)
+
+
+func _physics_process(delta: float):
+	if _is_server:
+		_update_server()
+	else:
+		_update_client()
+
+
+func _update_server():
+	# Process incoming messages
+	var message_queue = _network_transport.receive_messages()
+	for entry in message_queue:
+		var type = entry["message"]["type"]
+		if type == "spawn_request":
+			print("Player spawn requested!")
+			_player_spawner.spawn_player()
+
+	# Generate replication snapshots
+	var snapshots = _replication_server.generate_snapshots_for_all_clients()
+
+	# Send outgoing message for each snapshot
+	for client_id in snapshots.keys():
+		var message = {"type": "snapshot", "data": snapshots[client_id]}
+		_network_transport.send_message_to_client(client_id, message)
+
+
+func _update_client():
+	# Process incoming messages
+	var message_queue = _network_transport.receive_messages()
+	for entry in message_queue:
+		var type = entry["message"]["type"]
+		var data = entry["message"]["data"]
+		if type == "snapshot":
+			print("Snapshot received")
+			_replication_client.apply_snapshot(data)

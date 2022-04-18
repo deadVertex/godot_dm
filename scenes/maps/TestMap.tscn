@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://resources/materials/prototype/floor_dark.tres" type="Material" id=1]
-[ext_resource path="res://scenes/prefabs/player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/prefabs/player_spawn.tscn" type="PackedScene" id=2]
 [ext_resource path="res://resources/materials/prototype/wall_orange.tres" type="Material" id=3]
 [ext_resource path="res://assets/textures/kenny_nl_prototype_textures/Green/texture_02.png" type="Texture" id=4]
 [ext_resource path="res://scenes/prefabs/bean_boi.tscn" type="PackedScene" id=5]
@@ -11,9 +11,6 @@
 albedo_texture = ExtResource( 4 )
 
 [node name="TestMap" type="Spatial"]
-
-[node name="Player" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.813631, 1.58717, 4.33607 )
 
 [node name="CSGCombiner" type="CSGCombiner" parent="."]
 use_collision = true
@@ -127,3 +124,6 @@ bean_boi_scene = ExtResource( 5 )
 
 [node name="BeanBoiSpawnPoint" type="Spatial" parent="." groups=["bean_boi_spawns"]]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58755, -9.42203 )
+
+[node name="PlayerSpawn" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75842, 3.71437 )
