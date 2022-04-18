@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id=2]
+material = SubResource( 1 )
+size = Vector2( 0.2, 0.2 )
+
+[sub_resource type="Curve" id=3]
+max_value = 100.0
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), -19.3171, 0.0, 0, 0 ]
+
+[sub_resource type="Curve" id=4]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.227369 ), 0.0, 0.0, 0, 0 ]
+
+[node name="CPUParticles" type="CPUParticles"]
+cast_shadow = 0
+amount = 16
+speed_scale = 2.0
+explosiveness = 1.0
+randomness = 1.0
+lifetime_randomness = 0.21
+local_coords = false
+mesh = SubResource( 2 )
+direction = Vector3( 0, 0, 1 )
+initial_velocity = 5.0
+initial_velocity_random = 1.0
+angular_velocity = 195.56
+angular_velocity_random = 0.26
+damping_curve = SubResource( 3 )
+scale_amount = 0.0
+scale_amount_random = 1.0
+scale_amount_curve = SubResource( 4 )
