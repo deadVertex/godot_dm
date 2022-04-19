@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://scenes/maps/TestMap.tscn" type="PackedScene" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://scenes/prefabs/player.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/replication_server.gd" type="Script" id=8]
 [ext_resource path="res://scenes/replication_client.gd" type="Script" id=9]
+[ext_resource path="res://scenes/player_command_collector.gd" type="Script" id=10]
+[ext_resource path="res://scenes/player_command_router.gd" type="Script" id=11]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -29,6 +31,7 @@ script = ExtResource( 3 )
 script = ExtResource( 6 )
 world_path = NodePath("../World")
 player_scene = ExtResource( 7 )
+player_command_router_path = NodePath("../PlayerCommandRouter")
 
 [node name="ReplicationServer" type="Node" parent="."]
 script = ExtResource( 8 )
@@ -38,3 +41,9 @@ world_path = NodePath("../World")
 script = ExtResource( 9 )
 world_path = NodePath("../World")
 player_scene = ExtResource( 7 )
+
+[node name="PlayerCommandCollector" type="Node" parent="."]
+script = ExtResource( 10 )
+
+[node name="PlayerCommandRouter" type="Node" parent="."]
+script = ExtResource( 11 )

@@ -18,13 +18,15 @@ onready var _connect_to_server_window = $UI/MainMenu/ConnectToServerWindow
 onready var _player_spawner = $PlayerSpawner
 onready var _replication_server = $ReplicationServer
 onready var _replication_client = $ReplicationClient
+onready var _player_command_collector = $PlayerCommandCollector
+onready var _player_command_router = $PlayerCommandRouter
 
 # TODO List
-# - System for clients to request player spawns
+# - System for clients to request player spawns [x]
 # - Controller node for player which receives commands from the client and
 #   applies them to the player entity on the server
 # - Replicator node for player which receives state from the server and applies
-#   it to the player entities on the clients
+#   it to the player entities on the clients [x]
 
 
 func _ready():
@@ -94,7 +96,12 @@ func _update_server():
 		var type = entry["message"]["type"]
 		if type == "spawn_request":
 			print("Player spawn requested!")
-			_player_spawner.spawn_player()
+			_player_spawner.spawn_player(entry["sender_id"])
+		elif type == "player_cmd":
+			print("Player command received")
+			_player_command_router.route_cmd(
+				entry["message"]["data"], entry["sender_id"]
+			)
 
 	# Generate replication snapshots
 	var snapshots = _replication_server.generate_snapshots_for_all_clients()
@@ -114,3 +121,11 @@ func _update_client():
 		if type == "snapshot":
 			print("Snapshot received")
 			_replication_client.apply_snapshot(data)
+
+	# Collect player command
+	var cmd = _player_command_collector.build_player_command()
+	if cmd:
+		# Send player command
+		print("Sending player command")
+		var message = {"type": "player_cmd", "data": cmd}
+		_network_transport.send_message_to_server(message)

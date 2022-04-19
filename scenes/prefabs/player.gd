@@ -24,14 +24,29 @@ onready var head: Spatial = $Head
 onready var uzi_animations: AnimationPlayer = $Head/ViewModel/AnimationPlayer
 
 
-func _ready():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+func _get_movement_direction(cmd):
+	var direction = Vector3.DOWN
+
+	if cmd.forward > 0.0:
+		direction -= transform.basis.z
+	if cmd.forward < 0.0:
+		direction += transform.basis.z
+
+	if cmd.right > 0.0:
+		direction += transform.basis.x
+	if cmd.right < 0.0:
+		direction -= transform.basis.x
+
+	return direction.normalized()
 
 
-func _physics_process(delta):
-	var movement = _get_movement_direction()
+func apply_player_cmd(cmd, delta):
+	print("apply_player_cmd")
+	var movement = _get_movement_direction(cmd)
 
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	set_view_angles(cmd["view_angles"])
+
+	if cmd["jump"] and is_on_floor():
 		velocity.y = jump_impulse
 
 	velocity.x = (
@@ -49,24 +64,13 @@ func _physics_process(delta):
 
 	_time_until_next_shot = max(_time_until_next_shot - delta, 0.0)
 
-	if Input.is_action_pressed("fire"):
+	if cmd["primary_attack"]:
 		if _time_until_next_shot <= 0.0:
 			_handle_shooting()
 			_time_until_next_shot = time_between_shots
 			uzi_animations.play("Uzi_Fire")
 	else:
 		uzi_animations.play("Uzi_Idle")
-
-
-func _unhandled_input(event):
-	if event is InputEventMouseMotion:
-		_handle_camera_rotation(event)
-
-
-func _handle_camera_rotation(event):
-	rotate_y(deg2rad(-event.relative.x * camera_sensitivity))
-	head.rotate_x(deg2rad(-event.relative.y * camera_sensitivity))
-	head.rotation.x = clamp(head.rotation.x, -PI * 0.5, PI * 0.5)
 
 
 func _handle_shooting():
@@ -107,16 +111,16 @@ func _spawn_bullet_hole(position: Vector3, normal: Vector3):
 	get_tree().get_root().add_child(bullet_hole)
 
 
-func _get_movement_direction():
-	var direction = Vector3.DOWN
+func get_view_angles():
+	return Vector3(head.rotation.x, rotation.y, 0.0)
 
-	if Input.is_action_pressed("move_forwards"):
-		direction -= transform.basis.z
-	if Input.is_action_pressed("move_backwards"):
-		direction += transform.basis.z
-	if Input.is_action_pressed("move_left"):
-		direction -= transform.basis.x
-	if Input.is_action_pressed("move_right"):
-		direction += transform.basis.x
 
-	return direction.normalized()
+func set_view_angles(view_angles: Vector3):
+	rotation.y = view_angles.y
+	head.rotation.x = clamp(view_angles.x, -PI * 0.5, PI * 0.5)
+
+
+func handle_camera_rotation(event):
+	rotate_y(deg2rad(-event.relative.x * camera_sensitivity))
+	head.rotate_x(deg2rad(-event.relative.y * camera_sensitivity))
+	head.rotation.x = clamp(head.rotation.x, -PI * 0.5, PI * 0.5)

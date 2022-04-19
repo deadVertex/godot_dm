@@ -14,7 +14,6 @@ func _ready():
 		_world = get_node(world_path)
 
 
-# TODO: What type is entity?
 func register_entity(entity: NetworkReplication):
 	_entities.append(entity)
 
@@ -37,7 +36,6 @@ func create_snapshot_for_client(client_id: int):
 			snapshot.append(entry)
 		else:
 			# Create
-			# TODO: What entity type?
 			var entry = {
 				"type": "create",
 				"name": entity.get_name(),
