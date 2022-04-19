@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scenes/prefabs/player.gd" type="Script" id=1]
 [ext_resource path="res://assets/meshes/kenny_nl_weapon_pack/uziLong.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://scenes/prefabs/blood_splatter_fx.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/prefabs/network_replication.gd" type="Script" id=4]
 
 [sub_resource type="Animation" id=6]
 resource_name = "Uzi_Fire"
@@ -121,3 +122,7 @@ material/0 = null
 transform = Transform( 0.247441, 0, 0, 0, 0.0697744, 3.11567e-09, 0, 3.11567e-09, 0.141053, 0, -0.44088, -0.580967 )
 mesh = SubResource( 5 )
 material/0 = null
+
+[node name="NetworkReplication" type="Node" parent="."]
+script = ExtResource( 4 )
+body_path = NodePath("..")

@@ -1,5 +1,7 @@
 extends Node
 
+const NetworkReplication = preload("res://scenes/prefabs/network_replication.gd")
+
 export var world_path: NodePath
 
 var _world: Node
@@ -13,7 +15,7 @@ func _ready():
 
 
 # TODO: What type is entity?
-func register_entity(entity):
+func register_entity(entity: NetworkReplication):
 	_entities.append(entity)
 
 
@@ -24,15 +26,23 @@ func register_client(client_id: int):
 func create_snapshot_for_client(client_id: int):
 	var snapshot = []
 	for entity in _entities:
-		# TODO: What type is this entity?????
+		# TODO: Don't use entity name
 		if _clients[client_id].has(entity.get_name()):
 			# Update
-			var entry = {"type": "update", "name": entity.get_name()}
+			var entry = {
+				"type": "update",
+				"name": entity.get_name(),
+				"state": entity.get_state()
+			}
 			snapshot.append(entry)
 		else:
 			# Create
 			# TODO: What entity type?
-			var entry = {"type": "create", "name": entity.get_name()}
+			var entry = {
+				"type": "create",
+				"name": entity.get_name(),
+				"initial_state": entity.get_initial_state()
+			}
 			snapshot.append(entry)
 			# FIXME: We should not be modifying any data here!
 			_clients[client_id].append(entity.get_name())
