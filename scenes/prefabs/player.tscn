@@ -128,6 +128,7 @@ material/0 = null
 [node name="NetworkReplication" type="Node" parent="."]
 script = ExtResource( 4 )
 body_path = NodePath("..")
+register_with_replication_server = null
 
 [node name="PlayerCommandGenerator" type="Node" parent="."]
 script = ExtResource( 5 )

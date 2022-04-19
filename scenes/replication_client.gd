@@ -28,11 +28,11 @@ func get_replicated_entity_by_name(name):
 func apply_snapshot(snapshot):
 	for entry in snapshot:
 		if entry["type"] == "create":
-			print("Creating player entity")
+			#print("Creating player entity")
 			_create_player_entity(entry["initial_state"])
 
 		elif entry["type"] == "update":
-			print("Update player entity")
+			#print("Update player entity")
 			var entity = get_replicated_entity_by_name(entry["name"])
 			# TODO: What do we do if entity is not found?
 			entity.set_state(entry["state"])

@@ -1,9 +1,11 @@
 extends Node
 
+const Player = preload("res://scenes/prefabs/player.gd")
+
 export var body_path: NodePath
 export var register_with_replication_server: bool = true  # This is set to false on client
 
-var _body: KinematicBody
+var _body: Player
 
 
 func _ready():
@@ -29,9 +31,13 @@ func set_initial_state(initial_state):
 
 
 func get_state():
-	var state = {"position": _body.global_transform.origin}
+	var state = {
+		"position": _body.global_transform.origin,
+		"view_model_animation": _body.view_model_animation
+	}
 	return state
 
 
 func set_state(state):
 	_body.global_transform.origin = state["position"]
+	_body.set_view_model_animation(state["view_model_animation"])

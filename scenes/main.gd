@@ -35,8 +35,10 @@ onready var _player_command_router: PlayerCommandRouter = $PlayerCommandRouter
 # - Replicator node for player which receives state from the server and applies
 #   it to the player entities on the clients [x]
 # - Deployment automation [x]
-# - Make sure we are using types everywhere!
+# - Make sure we are using types everywhere! [x]
 # - Unit tests!
+# - Buffer player commands?
+# - Multiplayer shooting
 
 
 func _ready() -> void:
@@ -121,7 +123,7 @@ func _update_server() -> void:
 			print("Player spawn requested!")
 			_player_spawner.spawn_player(entry["sender_id"])
 		elif type == "player_cmd":
-			print("Player command received")
+			#print("Player command received")
 			_player_command_router.route_cmd(
 				entry["message"]["data"], entry["sender_id"]
 			)
@@ -142,13 +144,13 @@ func _update_client() -> void:
 		var type = entry["message"]["type"]
 		var data = entry["message"]["data"]
 		if type == "snapshot":
-			print("Snapshot received")
+			#print("Snapshot received")
 			_replication_client.apply_snapshot(data)
 
 	# Collect player command
 	var cmd = _player_command_collector.build_player_command()
 	if cmd:
 		# Send player command
-		print("Sending player command")
+		#print("Sending player command")
 		var message = {"type": "player_cmd", "data": cmd}
 		_network_transport.send_message_to_server(message)

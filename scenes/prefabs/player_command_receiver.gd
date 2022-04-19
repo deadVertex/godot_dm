@@ -11,9 +11,9 @@ onready var _last_received_player_cmd = _default_player_cmd()
 
 
 func _physics_process(delta: float):
-	print("_physics_process: enabled: %s" % enabled)
+	#print("_physics_process: enabled: %s" % enabled)
 	if enabled == true:
-		print("_player.apply_player_cmd: %s" % _last_received_player_cmd)
+		#print("_player.apply_player_cmd: %s" % _last_received_player_cmd)
 		# Apply last received player_cmd to our player entity
 		_player.apply_player_cmd(_last_received_player_cmd, delta)
 
