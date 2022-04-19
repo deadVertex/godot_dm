@@ -24,10 +24,12 @@ onready var _player_command_router = $PlayerCommandRouter
 # TODO List
 # - System for clients to request player spawns [x]
 # - Controller node for player which receives commands from the client and
-#   applies them to the player entity on the server
+#   applies them to the player entity on the server [x]
 # - Replicator node for player which receives state from the server and applies
 #   it to the player entities on the clients [x]
-
+# - Deployment automation [x]
+# - Make sure we are using types everywhere!
+# - Unit tests!
 
 func _ready():
 	var args = _parse_cmdline_args(OS.get_cmdline_args())
@@ -46,6 +48,9 @@ func _ready():
 		_connect_to_server_window.connect(
 			"connect_to_server", self, "_on_connect_to_server"
 		)
+
+		if args["connect"]:
+			_on_connect_to_server("127.0.0.1", 18000)
 
 
 func _on_connect_to_server(address: String, port: int):
@@ -72,6 +77,8 @@ func _parse_cmdline_args(args: PoolStringArray):
 	for arg in args:
 		if arg == "--listen":
 			result["listen"] = true
+		elif arg == "--connect":
+			result["connect"] = true # Only connect to local host for now
 
 	return result
 

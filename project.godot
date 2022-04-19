@@ -31,6 +31,10 @@ window/size/resizable=false
 window/size/test_width=800
 window/size/test_height=600
 
+[editor]
+
+main_run_args="--connect"
+
 [input]
 
 move_forwards={
