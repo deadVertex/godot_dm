@@ -1,5 +1,12 @@
 extends Node
 
+const NetworkTransport = preload("res://scenes/network_transport.gd")
+const PlayerSpawner = preload("res://scenes/player_spawner.gd")
+const ReplicationServer = preload("res://scenes/replication_server.gd")
+const ReplicationClient = preload("res://scenes/replication_client.gd")
+const PlayerCommandRouter = preload("res://scenes/player_command_router.gd")
+const PlayerCommandCollector = preload("res://scenes/player_command_collector.gd")
+
 const VERSION_MAJOR: int = 0
 const VERSION_MINOR: int = 1
 const VERSION_PATCH: int = 0
@@ -11,15 +18,15 @@ export var map: PackedScene
 
 var _is_server: bool = false
 
-onready var _world = $World
-onready var _network_transport = $NetworkTransport
-onready var _main_menu = $UI/MainMenu
-onready var _connect_to_server_window = $UI/MainMenu/ConnectToServerWindow
-onready var _player_spawner = $PlayerSpawner
-onready var _replication_server = $ReplicationServer
-onready var _replication_client = $ReplicationClient
-onready var _player_command_collector = $PlayerCommandCollector
-onready var _player_command_router = $PlayerCommandRouter
+onready var _world: Spatial = $World
+onready var _network_transport: NetworkTransport = $NetworkTransport
+onready var _main_menu: Control = $UI/MainMenu
+onready var _connect_to_server_window: Node = $UI/MainMenu/ConnectToServerWindow
+onready var _player_spawner: PlayerSpawner = $PlayerSpawner
+onready var _replication_server: ReplicationServer = $ReplicationServer
+onready var _replication_client: ReplicationClient = $ReplicationClient
+onready var _player_command_collector: PlayerCommandCollector = $PlayerCommandCollector
+onready var _player_command_router: PlayerCommandRouter = $PlayerCommandRouter
 
 # TODO List
 # - System for clients to request player spawns [x]
@@ -31,40 +38,49 @@ onready var _player_command_router = $PlayerCommandRouter
 # - Make sure we are using types everywhere!
 # - Unit tests!
 
-func _ready():
+
+func _ready() -> void:
 	var args = _parse_cmdline_args(OS.get_cmdline_args())
 	if args["listen"]:
 		print("Starting server")
 		_is_server = true
-		_network_transport.connect(
+		var error = _network_transport.connect(
 			"client_connected", self, "_on_client_connected"
 		)
+		if error != OK:
+			print("network_transport.connect failed: %s" % error)
+
 		_network_transport.start_server(DEFAULT_PORT, DEFAULT_MAX_CLIENTS)
 		_load_map()
 	else:
-		_network_transport.connect(
+		var error = _network_transport.connect(
 			"connection_accepted", self, "_on_connection_accepted"
 		)
-		_connect_to_server_window.connect(
+		if error != OK:
+			print("network_transport.connect: %s" % error)
+
+		error = _connect_to_server_window.connect(
 			"connect_to_server", self, "_on_connect_to_server"
 		)
+		if error != OK:
+			print("connect_to_server_window.connect: %s" % error)
 
 		if args["connect"]:
 			_on_connect_to_server("127.0.0.1", 18000)
 
 
-func _on_connect_to_server(address: String, port: int):
+func _on_connect_to_server(address: String, port: int) -> void:
 	_main_menu.hide()
 	print("Starting client")
 	_network_transport.connect_to_server(address, port)
 
 
-func _on_client_connected(id):
+func _on_client_connected(id: int) -> void:
 	print("Client connected: %d" % id)
 	_replication_server.register_client(id)
 
 
-func _on_connection_accepted(id):
+func _on_connection_accepted(id: int) -> void:
 	print("Connection accepted, id %d" % id)
 	_load_map()  # TODO: Ask server which map to load
 	# Request spawn
@@ -72,31 +88,31 @@ func _on_connection_accepted(id):
 	_network_transport.send_message_to_server(request)
 
 
-func _parse_cmdline_args(args: PoolStringArray):
+func _parse_cmdline_args(args: PoolStringArray) -> Dictionary:
 	var result: Dictionary = {"listen": false}
 	for arg in args:
 		if arg == "--listen":
 			result["listen"] = true
 		elif arg == "--connect":
-			result["connect"] = true # Only connect to local host for now
+			result["connect"] = true  # Only connect to local host for now
 
 	return result
 
 
-func _load_map():
+func _load_map() -> void:
 	assert(map)
 	var scene = map.instance()
 	_world.add_child(scene)
 
 
-func _physics_process(delta: float):
+func _physics_process(_delta: float) -> void:
 	if _is_server:
 		_update_server()
 	else:
 		_update_client()
 
 
-func _update_server():
+func _update_server() -> void:
 	# Process incoming messages
 	var message_queue = _network_transport.receive_messages()
 	for entry in message_queue:
@@ -119,7 +135,7 @@ func _update_server():
 		_network_transport.send_message_to_client(client_id, message)
 
 
-func _update_client():
+func _update_client() -> void:
 	# Process incoming messages
 	var message_queue = _network_transport.receive_messages()
 	for entry in message_queue:

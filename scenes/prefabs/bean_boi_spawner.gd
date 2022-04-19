@@ -4,7 +4,7 @@ export var max_bois: int = 4
 export var bean_boi_scene: PackedScene
 
 
-func _physics_process(delta: float):
+func _physics_process(_delta: float):
 	# Count current number of bois in scene
 	var current_bean_bois = get_tree().get_nodes_in_group("bean_bois")
 

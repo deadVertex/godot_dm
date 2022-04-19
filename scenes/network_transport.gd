@@ -11,8 +11,12 @@ signal client_connected(client_id)
 var _message_queue = []
 
 
-func start_server(port, max_clients):
-	get_tree().connect("network_peer_connected", self, "on_client_connected")
+func start_server(port: int, max_clients: int) -> void:
+	var error = get_tree().connect(
+		"network_peer_connected", self, "on_client_connected"
+	)
+	if error != OK:
+		print("get_tree().connect failed: %s" % error)
 
 	var net = NetworkedMultiplayerENet.new()
 	net.create_server(port, max_clients)
@@ -21,8 +25,15 @@ func start_server(port, max_clients):
 	print("Hosting server on port %d" % port)
 
 
-func connect_to_server(address, port):
-	get_tree().connect("connected_to_server", self, "on_connection_accepted")
+func connect_to_server(address: String, port: int) -> void:
+	assert(
+		(
+			get_tree().connect(
+				"connected_to_server", self, "on_connection_accepted"
+			)
+			== OK
+		)
+	)
 
 	#Logger.info("Connecting to server %s on port %d" % [address, port])
 	print("Connecting to server %s on port %d" % [address, port])
@@ -31,26 +42,26 @@ func connect_to_server(address, port):
 	get_tree().set_network_peer(net)
 
 
-func on_connection_accepted():
-	var client_id = get_tree().get_network_unique_id()
+func on_connection_accepted() -> void:
+	var client_id: int = get_tree().get_network_unique_id()
 	emit_signal("connection_accepted", client_id)
 
 
-func on_client_connected(client_id):
+func on_client_connected(client_id: int) -> void:
 	emit_signal("client_connected", client_id)
 
 
-func send_message_to_server(message):
+func send_message_to_server(message: Dictionary) -> void:
 	#Logger.debug('SEND_TO_SERVER: %s' % message)
 	rpc_unreliable_id(1, "_receive_message", message)
 
 
-func send_message_to_client(client_id, message):
+func send_message_to_client(client_id: int, message: Dictionary) -> void:
 	#Logger.debug('SEND_TO_CLIENT: %d %s' % [client_id, message])
 	rpc_unreliable_id(client_id, "_receive_message", message)
 
 
-remote func _receive_message(message):
+remote func _receive_message(message: Dictionary) -> void:
 	var sender_id = get_tree().get_rpc_sender_id()
 	#Logger.debug('RECEIVE: %d %s' % [sender_id, message])
 	var entry = {"message": message, "sender_id": sender_id}
@@ -58,7 +69,7 @@ remote func _receive_message(message):
 
 
 # FIXME: This is not a very obvious behavior, could easily introduce issues
-func receive_messages():
+func receive_messages() -> Array:
 	var result = _message_queue.duplicate()
 	_message_queue.clear()
 	return result

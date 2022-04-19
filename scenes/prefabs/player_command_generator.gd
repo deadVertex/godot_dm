@@ -2,7 +2,6 @@ extends Node
 
 export var register_with_collector: bool = false
 export var player_path: NodePath
-export var camera_sensitivity: float = 0.05
 
 onready var _player = get_node(player_path)
 
