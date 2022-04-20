@@ -40,7 +40,8 @@ func set_initial_state(initial_state):
 func get_state():
 	var state = {
 		"position": _body.global_transform.origin,
-		"view_model_animation": _body.view_model_animation
+		"view_model_animation": _body.view_model_animation,
+		"weapon": _body.get_view_model()
 	}
 	return state
 
@@ -48,6 +49,7 @@ func get_state():
 func set_state(state):
 	_body.global_transform.origin = state["position"]
 	_body.set_view_model_animation(state["view_model_animation"])
+	_body.set_view_model(state["weapon"])
 
 
 func _on_bullet_impact(position: Vector3, normal: Vector3):

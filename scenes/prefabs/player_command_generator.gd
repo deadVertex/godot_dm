@@ -1,9 +1,13 @@
 extends Node
 
+const Player = preload("res://scenes/prefabs/player.gd")
+
 export var register_with_collector: bool = false
 export var player_path: NodePath
 
-onready var _player = get_node(player_path)
+var _selected_weapon: int = Player.Weapon.UZI
+
+onready var _player: Player = get_node(player_path)
 
 
 func _ready():
@@ -37,12 +41,18 @@ func build_player_command():
 	if Input.is_action_pressed("fire"):
 		primary_attack = true
 
+	if Input.is_action_pressed("select_uzi"):
+		_selected_weapon = Player.Weapon.UZI
+	if Input.is_action_pressed("select_shotgun"):
+		_selected_weapon = Player.Weapon.SHOTGUN
+
 	var player_cmd = {
 		"view_angles": _player.get_view_angles(),
 		"forward": forward,
 		"right": right,
 		"jump": jump,
 		"primary_attack": primary_attack,
+		"selected_weapon": _selected_weapon,
 	}
 
 	return player_cmd

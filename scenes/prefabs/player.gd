@@ -3,6 +3,7 @@ extends KinematicBody
 signal bullet_impact(position, normal)
 
 enum ViewModelAnimation { IDLE, FIRE }
+enum Weapon { UZI, SHOTGUN } # TODO: Move away from fix enum for weapons
 
 const BeanBoi = preload("res://scenes/prefabs/bean_boi.gd")
 
@@ -19,10 +20,16 @@ export var view_model_animation: int = ViewModelAnimation.IDLE
 var velocity: Vector3 = Vector3.ZERO
 
 var _time_until_next_shot: float = 0.0
+var _weapon: int = Weapon.UZI
+var _rng = RandomNumberGenerator.new()
 
 onready var head: Spatial = $Head
-onready var uzi_animations: AnimationPlayer = $Head/ViewModel/AnimationPlayer
+onready var _animation_player: AnimationPlayer = $Head/ViewModel/AnimationPlayer
+onready var _uzi: Spatial = $Head/ViewModel/UziBase
+onready var _shotgun: Spatial = $Head/ViewModel/ShotgunBase
 
+func _ready():
+	_rng.randomize()
 
 func _get_movement_direction(cmd):
 	var direction = Vector3.DOWN
@@ -44,6 +51,7 @@ func apply_player_cmd(cmd, delta):
 	#print("apply_player_cmd")
 	var movement = _get_movement_direction(cmd)
 
+	set_view_model(cmd["selected_weapon"])
 	set_view_angles(cmd["view_angles"])
 
 	if cmd["jump"] and is_on_floor():
@@ -76,9 +84,25 @@ func apply_player_cmd(cmd, delta):
 
 # NOTE: This should only be run on the server
 func _handle_shooting():
-	var space_state = get_world().direct_space_state
 	var start = head.global_transform.origin
-	var end = start - head.global_transform.basis.z * BULLET_DISTANCE
+
+	if _weapon == Weapon.UZI:
+		var end = start - head.global_transform.basis.z * BULLET_DISTANCE
+		_process_bullet(start, end, 25.0)
+	elif _weapon == Weapon.SHOTGUN:
+		for _index in range(8):
+			var scale = 0.02
+			var offset = Vector3(_rng.randf_range(-scale, scale),
+				_rng.randf_range(-scale, scale),
+				_rng.randf_range(-scale, scale))
+			var forward = -head.global_transform.basis.z + offset
+			forward = forward.normalized()
+			var end = start + forward * BULLET_DISTANCE
+			_process_bullet(start, end, 16)
+
+
+func _process_bullet(start: Vector3, end: Vector3, damage: float):
+	var space_state = get_world().direct_space_state
 	var result = space_state.intersect_ray(start, end)
 	if !result.empty():
 		var collider = result["collider"]
@@ -88,7 +112,7 @@ func _handle_shooting():
 		emit_signal("bullet_impact", result["position"], result["normal"])
 
 		if collider is BeanBoi:
-			collider.apply_damage(25)
+			collider.apply_damage(damage)
 			#_spawn_blood_splatter_fx(
 			#collider, result["position"], result["normal"]
 			#)
@@ -123,6 +147,26 @@ func set_view_model_animation(animation: int) -> void:
 	assert(animation in ViewModelAnimation.values())
 	view_model_animation = animation
 	if animation == ViewModelAnimation.IDLE:
-		uzi_animations.play("Uzi_Idle")
+		if _weapon == Weapon.UZI:
+			_animation_player.play("Uzi_Idle")
+		elif _weapon == Weapon.SHOTGUN:
+			_animation_player.play("Shotgun_Idle")
 	elif animation == ViewModelAnimation.FIRE:
-		uzi_animations.play("Uzi_Fire")
+		if _weapon == Weapon.UZI:
+			_animation_player.play("Uzi_Fire")
+		elif _weapon == Weapon.SHOTGUN:
+			_animation_player.play("Shotgun_Fire")
+
+
+func set_view_model(weapon: int) -> void:
+	_weapon = weapon
+	if weapon == Weapon.UZI:
+		_uzi.show()
+		_shotgun.hide()
+	elif weapon == Weapon.SHOTGUN:
+		_uzi.hide()
+		_shotgun.show()
+
+
+func get_view_model() -> int:
+	return _weapon

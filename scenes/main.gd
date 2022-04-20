@@ -38,7 +38,9 @@ onready var _player_command_router: PlayerCommandRouter = $PlayerCommandRouter
 # - Make sure we are using types everywhere! [x]
 # - Unit tests!
 # - Buffer player commands?
-# - Multiplayer shooting
+# - Multiplayer shooting [x]
+# - Multiple weapons (shotgun) [ ]
+# - Weapon pickups! [ ]
 
 
 func _ready() -> void:
