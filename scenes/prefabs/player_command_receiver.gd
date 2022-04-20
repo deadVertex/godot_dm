@@ -1,6 +1,7 @@
 extends Node
 
 const Player = preload("res://scenes/prefabs/player.gd")
+const ViewModel = preload("res://scenes/prefabs/view_model.gd")
 
 export var player_path: NodePath
 
@@ -29,6 +30,7 @@ func _default_player_cmd():
 		"right": 0.0,
 		"jump": false,
 		"primary_attack": false,
+		"selected_weapon": ViewModel.Weapon.UZI,
 	}
 
 	return player_cmd

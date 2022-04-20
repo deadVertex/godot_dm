@@ -59,6 +59,7 @@ func create_snapshot_for_client(client_id: int):
 				"initial_state": entity.get_initial_state()
 			}
 			snapshot.append(entry)
+			# print("create_snapshot_for_client: %s" % entry)
 			# FIXME: We should not be modifying any data here!
 			_clients[client_id].append(entity.get_name())
 

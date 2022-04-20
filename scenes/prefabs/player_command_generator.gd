@@ -2,10 +2,13 @@ extends Node
 
 const Player = preload("res://scenes/prefabs/player.gd")
 
+# For the enums, they should probably be an autoload
+const ViewModel = preload("res://scenes/prefabs/view_model.gd")
+
 export var register_with_collector: bool = false
 export var player_path: NodePath
 
-var _selected_weapon: int = Player.Weapon.UZI
+var _selected_weapon: int = ViewModel.Weapon.UZI
 
 onready var _player: Player = get_node(player_path)
 
@@ -42,9 +45,9 @@ func build_player_command():
 		primary_attack = true
 
 	if Input.is_action_pressed("select_uzi"):
-		_selected_weapon = Player.Weapon.UZI
+		_selected_weapon = ViewModel.Weapon.UZI
 	if Input.is_action_pressed("select_shotgun"):
-		_selected_weapon = Player.Weapon.SHOTGUN
+		_selected_weapon = ViewModel.Weapon.SHOTGUN
 
 	var player_cmd = {
 		"view_angles": _player.get_view_angles(),

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://scenes/prefabs/player.gd" type="Script" id=1]
 [ext_resource path="res://assets/meshes/kenny_nl_weapon_pack/uziLong.obj" type="ArrayMesh" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://scenes/prefabs/network_replication.gd" type="Script" id=4]
 [ext_resource path="res://scenes/prefabs/player_command_generator.gd" type="Script" id=5]
 [ext_resource path="res://scenes/prefabs/player_command_receiver.gd" type="Script" id=6]
+[ext_resource path="res://scenes/prefabs/view_model.gd" type="Script" id=7]
 
 [sub_resource type="Animation" id=8]
 length = 0.001
@@ -201,6 +202,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.709785, -0.366209 )
 
 [node name="ViewModel" type="Spatial" parent="Head"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0498942, -0.0495896, -0.121672 )
+script = ExtResource( 7 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Head/ViewModel"]
 anims/RESET = SubResource( 8 )
@@ -305,10 +307,6 @@ transform = Transform( 0.247441, 0, 0, 0, 0.0697744, 3.11567e-09, 0, 3.11567e-09
 mesh = SubResource( 5 )
 material/0 = null
 
-[node name="NetworkReplication" type="Node" parent="."]
-script = ExtResource( 4 )
-body_path = NodePath("..")
-
 [node name="PlayerCommandGenerator" type="Node" parent="."]
 script = ExtResource( 5 )
 register_with_collector = null
@@ -317,3 +315,8 @@ player_path = NodePath("..")
 [node name="PlayerCommandReceiver" type="Node" parent="."]
 script = ExtResource( 6 )
 player_path = NodePath("..")
+
+[node name="NetworkReplication" type="Node" parent="."]
+script = ExtResource( 4 )
+body_path = NodePath("..")
+view_model_path = NodePath("../Head/ViewModel")

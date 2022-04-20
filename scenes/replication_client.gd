@@ -29,9 +29,10 @@ func get_replicated_entity_by_name(name):
 
 
 func apply_snapshot(snapshot):
+	# print("apply_snapshot: snapshot.size() = %d" % snapshot.size())
 	for entry in snapshot:
 		if entry["type"] == "create":
-			#print("Creating player entity")
+			# print("Creating player entity")
 			_create_player_entity(entry["initial_state"])
 
 		elif entry["type"] == "update":
@@ -46,6 +47,7 @@ func apply_snapshot(snapshot):
 
 
 func _create_player_entity(initial_state: Dictionary):
+	# print("_create_player_entity: %s" % initial_state)
 	var player = player_scene.instance()
 	# Disable auto-registration with replication server
 	var network_rep = player.get_node("NetworkReplication")
