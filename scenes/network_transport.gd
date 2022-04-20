@@ -26,14 +26,10 @@ func start_server(port: int, max_clients: int) -> void:
 
 
 func connect_to_server(address: String, port: int) -> void:
-	assert(
-		(
-			get_tree().connect(
-				"connected_to_server", self, "on_connection_accepted"
-			)
-			== OK
-		)
+	var error = get_tree().connect(
+		"connected_to_server", self, "on_connection_accepted"
 	)
+	assert(error == OK)
 
 	#Logger.info("Connecting to server %s on port %d" % [address, port])
 	print("Connecting to server %s on port %d" % [address, port])

@@ -1,11 +1,12 @@
 extends KinematicBody
 
+signal bullet_impact(position, normal)
+
 enum ViewModelAnimation { IDLE, FIRE }
 
 const BeanBoi = preload("res://scenes/prefabs/bean_boi.gd")
 
 const BULLET_DISTANCE: float = 100.0
-const BULLET_HOLE_OFFSET: float = 0.001
 export var camera_sensitivity: float = 0.05
 export var speed: float = 120.0
 export var jump_impulse: float = 12.0
@@ -13,13 +14,9 @@ export var gravity: float = -20.0
 export var friction: float = 8.0
 export var time_between_shots: float = 0.18
 
-export var blood_splatter_fx_prefab: PackedScene
 export var view_model_animation: int = ViewModelAnimation.IDLE
 
 var velocity: Vector3 = Vector3.ZERO
-
-# TODO: Make this editor configurable
-var _bullet_hole_prefab = preload("res://scenes/prefabs/bullet_hole.tscn")
 
 var _time_until_next_shot: float = 0.0
 
@@ -44,7 +41,7 @@ func _get_movement_direction(cmd):
 
 
 func apply_player_cmd(cmd, delta):
-	print("apply_player_cmd")
+	#print("apply_player_cmd")
 	var movement = _get_movement_direction(cmd)
 
 	set_view_angles(cmd["view_angles"])
@@ -85,36 +82,26 @@ func _handle_shooting():
 	var result = space_state.intersect_ray(start, end)
 	if !result.empty():
 		var collider = result["collider"]
+
+		# Network event for bullet impact
+		# print("emit_signal: bullet_impact")
+		emit_signal("bullet_impact", result["position"], result["normal"])
+
 		if collider is BeanBoi:
 			collider.apply_damage(25)
-			# Network event for bullet impact
-			_spawn_blood_splatter_fx(
-				collider, result["position"], result["normal"]
-			)
-		else:
-			_spawn_bullet_hole(result["position"], result["normal"])
+			#_spawn_blood_splatter_fx(
+			#collider, result["position"], result["normal"]
+			#)
 
 
-func _spawn_blood_splatter_fx(boi: Spatial, position: Vector3, normal: Vector3):
-	var blood_splatter = blood_splatter_fx_prefab.instance()
-	boi.add_child(blood_splatter)
-	var up = Vector3.UP
-	if normal.dot(up) >= 0.99999:
-		up = Vector3.RIGHT
-	blood_splatter.look_at_from_position(position, position + normal, up)
-	blood_splatter.restart()
-
-
-func _spawn_bullet_hole(position: Vector3, normal: Vector3):
-	var bullet_hole = _bullet_hole_prefab.instance()
-	var up = Vector3.UP
-	if normal.dot(up) >= 0.99999:
-		up = Vector3.RIGHT
-
-	bullet_hole.look_at_from_position(
-		position + normal * BULLET_HOLE_OFFSET, position + normal, up
-	)
-	get_tree().get_root().add_child(bullet_hole)
+#func _spawn_blood_splatter_fx(boi: Spatial, position: Vector3, normal: Vector3):
+#var blood_splatter = blood_splatter_fx_prefab.instance()
+#boi.add_child(blood_splatter)
+#var up = Vector3.UP
+#if normal.dot(up) >= 0.99999:
+#up = Vector3.RIGHT
+#blood_splatter.look_at_from_position(position, position + normal, up)
+#blood_splatter.restart()
 
 
 func get_view_angles():

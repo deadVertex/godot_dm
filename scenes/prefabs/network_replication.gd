@@ -1,5 +1,7 @@
 extends Node
 
+signal network_event(event)
+
 const Player = preload("res://scenes/prefabs/player.gd")
 
 export var body_path: NodePath
@@ -19,6 +21,11 @@ func _ready():
 		)
 		if replication_server:
 			replication_server.register_entity(self)
+
+		# Capture bullet impact signal and convert to network event
+		var error = _body.connect("bullet_impact", self, "_on_bullet_impact")
+		assert(error == OK)
+		# print("_body.connect bullet_impact")
 
 
 func get_initial_state():
@@ -41,3 +48,15 @@ func get_state():
 func set_state(state):
 	_body.global_transform.origin = state["position"]
 	_body.set_view_model_animation(state["view_model_animation"])
+
+
+func _on_bullet_impact(position: Vector3, normal: Vector3):
+	# print("_on_bullet_impact")
+	# Create network event for the bullet impact signal we received from the
+	# player body and emit another signal to pass the event up to the
+	# replication server
+	var event = {
+		"type": "bullet_impact", "position": position, "normal": normal
+	}
+	# print("emit_signal: network_event")
+	emit_signal("network_event", event)

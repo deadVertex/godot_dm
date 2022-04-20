@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://scenes/maps/TestMap.tscn" type="PackedScene" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://scenes/replication_client.gd" type="Script" id=9]
 [ext_resource path="res://scenes/player_command_collector.gd" type="Script" id=10]
 [ext_resource path="res://scenes/player_command_router.gd" type="Script" id=11]
+[ext_resource path="res://scenes/prefabs/bullet_hole.tscn" type="PackedScene" id=12]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -41,6 +42,7 @@ world_path = NodePath("../World")
 script = ExtResource( 9 )
 world_path = NodePath("../World")
 player_scene = ExtResource( 7 )
+bullet_hole_prefab = ExtResource( 12 )
 
 [node name="PlayerCommandCollector" type="Node" parent="."]
 script = ExtResource( 10 )
