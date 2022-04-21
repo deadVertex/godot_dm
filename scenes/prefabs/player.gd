@@ -21,6 +21,7 @@ var _time_until_next_shot: float = 0.0
 var _rng = RandomNumberGenerator.new()
 var _active_weapon: int = ViewModel.Weapon.UZI
 var _current_view_model_animation: int = ViewModel.ViewModelAnimation.IDLE
+var _weapons := {ViewModel.Weapon.UZI: true}
 
 onready var head: Spatial = $Head
 
@@ -48,7 +49,9 @@ func apply_player_cmd(cmd, delta):
 	var movement = _get_movement_direction(cmd)
 
 	# print("apply_player_cmd: %s" % cmd)
-	_active_weapon = cmd["selected_weapon"]
+	if _weapons.has(cmd["selected_weapon"]):
+		_active_weapon = cmd["selected_weapon"]
+
 	set_view_angles(cmd["view_angles"])
 
 	if cmd["jump"] and is_on_floor():
@@ -146,3 +149,8 @@ func get_active_weapon() -> int:
 
 func get_current_view_model_animation() -> int:
 	return _current_view_model_animation
+
+
+func give_weapon(weapon: int) -> void:
+	print("give_weapon: %d" % weapon)
+	_weapons[weapon] = true

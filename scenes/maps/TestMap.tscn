@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://resources/materials/prototype/floor_dark.tres" type="Material" id=1]
 [ext_resource path="res://scenes/prefabs/player_spawn.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://assets/textures/kenny_nl_prototype_textures/Green/texture_02.png" type="Texture" id=4]
 [ext_resource path="res://scenes/prefabs/bean_boi.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/prefabs/bean_boi_spawner.gd" type="Script" id=6]
+[ext_resource path="res://scenes/prefabs/weapon_pickup.tscn" type="PackedScene" id=7]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 4 )
@@ -127,3 +128,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58755, -9.42203 )
 
 [node name="PlayerSpawn" parent="." instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75842, 3.71437 )
+
+[node name="WeaponPickup" parent="." instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.0864, 5.76163, 21.2942 )
