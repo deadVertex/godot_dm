@@ -130,4 +130,5 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58755, -9.42203 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75842, 3.71437 )
 
 [node name="WeaponPickup" parent="." instance=ExtResource( 7 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.0864, 5.76163, 21.2942 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.0864, 5.06775, 21.2942 )
+weapon = 1

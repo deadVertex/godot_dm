@@ -1,35 +1,177 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scenes/prefabs/weapon_pickup.gd" type="Script" id=1]
-
-[sub_resource type="SpatialMaterial" id=1]
-emission_enabled = true
-emission = Color( 0.639216, 0, 1, 1 )
-emission_energy = 1.0
-emission_operator = 0
-emission_on_uv2 = false
-
-[sub_resource type="SphereMesh" id=2]
-material = SubResource( 1 )
-radius = 0.25
-height = 0.5
-radial_segments = 8
-rings = 4
+[ext_resource path="res://assets/meshes/kenny_nl_weapon_pack/shotgun.obj" type="ArrayMesh" id=2]
 
 [sub_resource type="BoxShape" id=3]
 extents = Vector3( 0.5, 0.5, 0.5 )
 
+[sub_resource type="SpatialMaterial" id=7]
+albedo_color = Color( 0.509804, 0.509804, 0.509804, 1 )
+
+[sub_resource type="CylinderMesh" id=4]
+material = SubResource( 7 )
+top_radius = 0.45
+bottom_radius = 0.5
+height = 0.1
+
+[sub_resource type="Animation" id=5]
+resource_name = "Idle"
+length = 4.0
+loop = true
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("WeaponOrigin:translation:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 0.5, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 0.5, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 1, 2, 3, 4 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("WeaponOrigin:rotation_degrees:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.5, 46.1067, 180, -0.3, -32.2267, 0.4, 38.6067, 360, -0.4, -34.7946, 0.4, 30.8693 ),
+"times": PoolRealArray( 0, 2, 4 )
+}
+
+[sub_resource type="Animation" id=6]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("WeaponOrigin:translation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("WeaponOrigin:translation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("WeaponOrigin:translation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("WeaponOrigin:rotation_degrees:x")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/4/type = "bezier"
+tracks/4/path = NodePath("WeaponOrigin:rotation_degrees:y")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/5/type = "bezier"
+tracks/5/path = NodePath("WeaponOrigin:rotation_degrees:z")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+
 [node name="WeaponPickup" type="Spatial"]
 script = ExtResource( 1 )
-weapon = 1
-
-[node name="MeshInstance" type="MeshInstance" parent="."]
-mesh = SubResource( 2 )
-material/0 = null
 
 [node name="Area" type="Area" parent="."]
 
 [node name="CollisionShape" type="CollisionShape" parent="Area"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
 shape = SubResource( 3 )
 
+[node name="BaseMesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0 )
+mesh = SubResource( 4 )
+material/0 = null
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "Idle"
+anims/Idle = SubResource( 5 )
+anims/RESET = SubResource( 6 )
+
+[node name="WeaponOrigin" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+
+[node name="ShotgunMesh" type="MeshInstance" parent="WeaponOrigin"]
+transform = Transform( 12.3698, 0, 0, 0, 12.3698, 0, 0, 0, 12.3698, 0, 0, 0 )
+mesh = ExtResource( 2 )
+skeleton = NodePath("")
+material/0 = null
+material/1 = null
+material/2 = null
+material/3 = null
+material/4 = null
+material/5 = null
+material/6 = null
+material/7 = null
+material/8 = null
+material/9 = null
+material/10 = null
+material/11 = null
+material/12 = null
+material/13 = null
+material/14 = null
+material/15 = null
+material/16 = null
+material/17 = null
+material/18 = null
+material/19 = null
+material/20 = null
+material/21 = null
+material/22 = null
+material/23 = null
+material/24 = null
+material/25 = null
+material/26 = null
+material/27 = null
+material/28 = null
+material/29 = null
+material/30 = null
+material/31 = null
+material/32 = null
+
+[node name="OmniLight" type="OmniLight" parent="WeaponOrigin"]
+transform = Transform( -0.621316, 0, -0.78356, 0, 1, 0, 0.78356, 0, -0.621316, 0, -0.243447, 0 )
+visible = false
+light_color = Color( 0.231373, 0.92549, 0.647059, 1 )
+light_energy = 4.0
+omni_range = 1.0
+
+[node name="RespawnTimer" type="Timer" parent="."]
+wait_time = 30.0
+
 [connection signal="body_entered" from="Area" to="." method="_on_area_body_entered"]
+[connection signal="timeout" from="RespawnTimer" to="." method="_on_respawn_timer_timeout"]
