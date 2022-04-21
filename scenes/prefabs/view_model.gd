@@ -1,13 +1,14 @@
 extends Spatial
 
 enum ViewModelAnimation { IDLE, FIRE }
-enum Weapon { UZI, SHOTGUN } # TODO: Move away from fix enum for weapons
+enum Weapon { UZI, SHOTGUN }  # TODO: Move away from fix enum for weapons
 
 var _visible_weapon: int = Weapon.UZI
 
 onready var _animation_player: AnimationPlayer = $AnimationPlayer
 onready var _uzi: Spatial = $UziBase
 onready var _shotgun: Spatial = $ShotgunBase
+
 
 func set_weapon(weapon: int) -> void:
 	_visible_weapon = weapon
@@ -31,5 +32,3 @@ func set_animation(animation: int) -> void:
 			_animation_player.play("Uzi_Fire")
 		elif _visible_weapon == Weapon.SHOTGUN:
 			_animation_player.play("Shotgun_Fire")
-
-

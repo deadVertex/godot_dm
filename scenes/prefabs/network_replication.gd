@@ -9,7 +9,6 @@ export var body_path: NodePath
 export var view_model_path: NodePath
 export var register_with_replication_server: bool = true  # This is set to false on client
 
-
 onready var _body: Player = get_node(body_path)
 onready var _view_model: ViewModel = get_node(view_model_path)
 

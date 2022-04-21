@@ -6,7 +6,7 @@ shopt -s globstar
 root=$(realpath "$(dirname $0)/../")
 
 exit_code=0
-for file in "$root"/**/*.gd; do
+for file in "$root"/{scenes,tests}/**/*.gd; do
     if ! gdlint "$file"; then
         exit_code=1
     fi

@@ -5,10 +5,12 @@ const Player = preload("res://scenes/prefabs/player.tscn")
 # Just for enums...
 const ViewModel = preload("res://scenes/prefabs/view_model.gd")
 
+
 func test_first():
 	# Entities register themselves to the server if they need to be replicated to the client.
 	var dummy_entity = autofree(Node.new())
-	assert_eq(1,1)
+	assert_eq(1, 1)
+
 
 func test_overlap_area():
 	# Given a weapon pickup

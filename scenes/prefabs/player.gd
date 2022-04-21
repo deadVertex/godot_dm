@@ -25,8 +25,10 @@ var _weapons := {ViewModel.Weapon.UZI: true}
 
 onready var head: Spatial = $Head
 
+
 func _ready():
 	_rng.randomize()
+
 
 func _get_movement_direction(cmd):
 	var direction = Vector3.DOWN
@@ -92,9 +94,11 @@ func _handle_shooting():
 	elif _active_weapon == ViewModel.Weapon.SHOTGUN:
 		for _index in range(8):
 			var scale = 0.02
-			var offset = Vector3(_rng.randf_range(-scale, scale),
+			var offset = Vector3(
 				_rng.randf_range(-scale, scale),
-				_rng.randf_range(-scale, scale))
+				_rng.randf_range(-scale, scale),
+				_rng.randf_range(-scale, scale)
+			)
 			var forward = -head.global_transform.basis.z + offset
 			forward = forward.normalized()
 			var end = start + forward * BULLET_DISTANCE

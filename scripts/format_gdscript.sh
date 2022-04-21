@@ -5,4 +5,4 @@ shopt -s globstar
 
 root=$(realpath "$(dirname $0)/../")
 
-gdformat "$root"/**/*.gd --line-length=80
+gdformat "$root"/{scenes,tests}/**/*.gd --line-length=80

@@ -10,6 +10,7 @@ var _weapon_available := true
 
 onready var _weapon_origin: Spatial = $WeaponOrigin
 
+
 func _on_area_body_entered(body: Player) -> void:
 	if body is Player:
 		body.give_weapon(weapon)
@@ -19,6 +20,7 @@ func _on_area_body_entered(body: Player) -> void:
 func set_weapon_available(available: bool) -> void:
 	_weapon_available = available
 	_weapon_origin.visible = available
+
 
 func get_weapon_available() -> bool:
 	return _weapon_available
