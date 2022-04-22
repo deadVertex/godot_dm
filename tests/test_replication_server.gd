@@ -30,6 +30,32 @@ func test_replication_server():
 	assert_eq(next_snapshot[0]["type"], "update")
 
 
+func test_replication_server_allocates_id():
+	var replication_server = autofree(ReplicationServer.new())
+	assert_eq(replication_server._next_id, 1)
+
+	var entity = double(NetworkReplication).new()
+	replication_server.register_entity(entity)
+
+	assert_called(entity, "set_id", [1])
+	assert_eq(replication_server._next_id, 2)
+
+
+func test_replication_server_sends_id():
+	var replication_server = autofree(ReplicationServer.new())
+
+	var entity = double(NetworkReplication).new()
+	stub(entity, "get_id").to_return(1)
+	replication_server.register_entity(entity)
+
+	var client_id = 1
+	replication_server.register_client(client_id)
+
+	var snapshot = replication_server.create_snapshot_for_client(client_id)
+	assert_eq(snapshot[0]["type"], "create")
+	assert_eq(snapshot[0]["id"], 1)
+
+
 func test_replication_client():
 	var entity_factory = double(EntityFactory).new()
 	var weapon_pickup = double(WeaponPickupScene).instance()
@@ -45,6 +71,7 @@ func test_replication_client():
 	var create_snapshot = []
 	create_snapshot.append({
 		"type": "create",
+		"id": 1,
 		"initial_state": { 
 			"type": NetworkReplication.EntityType.OTHER
 		}
@@ -53,6 +80,33 @@ func test_replication_client():
 
 	# Then we register the new entity
 	assert_eq(replication_client._entities.size(), 1)
+
+
+func test_replication_client_sets_id_on_create():
+	var entity_factory = double(EntityFactory).new()
+	var weapon_pickup = double(WeaponPickupScene).instance()
+	stub(entity_factory, "create_weapon_pickup").to_return(weapon_pickup)
+
+	var network_rep = double(NetworkReplication).new()
+	replace_node(weapon_pickup, "WeaponPickupNetworkReplication", network_rep)
+
+	# Given a replication client
+	var replication_client = autofree(ReplicationClient.new())
+	replication_client._entity_factory = entity_factory
+
+	# When we receive a snapshot with an ID
+	var create_snapshot = []
+	create_snapshot.append({
+		"type": "create",
+		"id": 1,
+		"initial_state": { 
+			"type": NetworkReplication.EntityType.OTHER
+		}
+	})
+	replication_client.apply_snapshot(create_snapshot)
+
+	# Then we the new NetworkReplication node to that ID
+	assert_called(network_rep, "set_id", [1])
 
 
 # TODO: Split into two tests
@@ -97,16 +151,23 @@ func test_replication_integration() -> void:
 	# Create server-side entity
 	var server_entity = add_child_autofree(WeaponPickupScene.instance())
 	server_entity.set_name("bob")
+	server_entity.global_transform.origin = Vector3(1, 2, 3)
 	var network_rep = server_entity.get_node("WeaponPickupNetworkReplication")
 	assert_not_null(network_rep)
 	server.register_entity(network_rep)
 	var client_id = 1
 	server.register_client(client_id)
 
+	# Generate a snapshot on the server and process on client
 	var snapshots = server.generate_snapshots_for_all_clients()
 	assert_has(snapshots, client_id)
 
 	var snapshot = snapshots[client_id]
 
 	client.apply_snapshot(snapshot)
-	# Check that we created a weapon pickup at Vector3(1, 2, 3)
+
+	# Check that we created a weapon pickup entity with the
+	# expected initial position
+	var client_entity = entity_factory.world.get_node("WeaponPickup")
+	assert_not_null(client_entity)
+	assert_eq(client_entity.global_transform.origin, Vector3(1, 2, 3))

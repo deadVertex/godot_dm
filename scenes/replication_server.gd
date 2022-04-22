@@ -8,6 +8,7 @@ var _world: Node
 var _entities: Array = []  # Change to dict with entity IDs?
 var _events: Array = []  # Event queue to send to clients
 var _clients: Dictionary = {}  # Key is client_id
+var _next_id: int = 1
 
 
 func _ready():
@@ -22,6 +23,9 @@ func register_entity(entity: NetworkReplication):
 		"network_event", self, "_on_entity_network_event"
 	)
 	assert(error == OK)
+
+	entity.set_id(_next_id)
+	_next_id += 1
 	_entities.append(entity)
 
 
@@ -56,7 +60,7 @@ func create_snapshot_for_client(client_id: int):
 			# Create
 			var entry = {
 				"type": "create",
-				"name": entity.get_name(),
+				"id": entity.get_id(),
 				"initial_state": entity.get_initial_state()
 			}
 			snapshot.append(entry)

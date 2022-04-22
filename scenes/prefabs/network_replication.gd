@@ -14,6 +14,8 @@ export(NodePath) var root_path
 export(bool) var register_with_replication_server = true  # This is set to false on client
 export(EntityType) var entity_type = EntityType.PLAYER
 
+var _id: int = 0
+
 onready var _body: Player = get_node(body_path)
 onready var _view_model: ViewModel = get_node(view_model_path)
 onready var _root: Spatial = get_node(root_path)
@@ -88,3 +90,12 @@ func _on_bullet_impact(position: Vector3, normal: Vector3):
 	}
 	# print("emit_signal: network_event")
 	emit_signal("network_event", event)
+
+
+func set_id(id: int) -> void:
+	assert(_id == 0)
+	_id = id
+
+
+func get_id() -> int:
+	return _id

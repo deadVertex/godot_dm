@@ -43,7 +43,7 @@ func apply_snapshot(snapshot):
 	for entry in snapshot:
 		if entry["type"] == "create":
 			print("apply_snapshot: Create entity")
-			_create_entity(entry["initial_state"])
+			_create_entity(entry["id"], entry["initial_state"])
 
 		elif entry["type"] == "update":
 			#print("Update player entity")
@@ -59,24 +59,27 @@ func apply_snapshot(snapshot):
 			_process_event(entry["data"])
 
 
-func _create_entity(initial_state: Dictionary):
+func _create_entity(id: int, initial_state: Dictionary):
+	var entity = null
 	match initial_state["type"]:
 		NetworkReplication.EntityType.PLAYER:
-			_create_player_entity(initial_state)
+			entity = _create_player_entity(initial_state)
 		NetworkReplication.EntityType.OTHER:
-			_create_weapon_pickup(initial_state)
+			entity = _create_weapon_pickup(initial_state)
 		_:
 			print("Unknown type: %s" % initial_state)
+
+	entity.set_id(id)
+	register_entity(entity)
+	entity.set_initial_state(initial_state)
 
 
 func _create_weapon_pickup(initial_state: Dictionary):
 	print("_create_weapon_pickup: %s" % initial_state)
 	var pickup = _entity_factory.create_weapon_pickup(initial_state)
-	print(pickup)
 
 	var network_rep = pickup.get_node("WeaponPickupNetworkReplication")
-	register_entity(network_rep)
-	network_rep.set_initial_state(initial_state)
+	return network_rep
 
 
 func _create_player_entity(initial_state: Dictionary):
@@ -84,8 +87,7 @@ func _create_player_entity(initial_state: Dictionary):
 	var player = _entity_factory.create_player(initial_state)
 
 	var network_rep = player.get_node("NetworkReplication")
-	register_entity(network_rep)
-	network_rep.set_initial_state(initial_state)
+	return network_rep
 
 
 func _process_event(event: Dictionary):
