@@ -1,6 +1,10 @@
 extends Node
 
 const NetworkReplication = preload("res://scenes/prefabs/network_replication.gd")
+const EntityFactory = preload("res://scenes/entity_factory.gd")
+
+const Player = preload("res://scenes/prefabs/player.gd")
+const WeaponPickup = preload("res://scenes/prefabs/weapon_pickup.gd")
 
 export(NodePath) var world_path
 export(PackedScene) var player_scene
@@ -11,11 +15,16 @@ export(PackedScene) var weapon_pickup_scene
 
 var _world: Node
 var _entities: Array = []  # Change to dict with entity IDs?
-
+var _entity_factory: EntityFactory
 
 func _ready():
 	if world_path:
 		_world = get_node(world_path)
+	
+	_entity_factory = EntityFactory.new()
+	_entity_factory.world = _world
+	_entity_factory.player_scene = player_scene
+	_entity_factory.weapon_pickup_scene = weapon_pickup_scene
 
 
 func register_entity(entity: NetworkReplication):
@@ -33,13 +42,17 @@ func apply_snapshot(snapshot):
 	# print("apply_snapshot: snapshot.size() = %d" % snapshot.size())
 	for entry in snapshot:
 		if entry["type"] == "create":
+			print("apply_snapshot: Create entity")
 			_create_entity(entry["initial_state"])
 
 		elif entry["type"] == "update":
 			#print("Update player entity")
 			var entity = get_replicated_entity_by_name(entry["name"])
-			# TODO: What do we do if entity is not found?
-			entity.set_state(entry["state"])
+			if entity:
+				entity.set_state(entry["state"])
+			else:
+				# TODO: What do we do if entity is not found?
+				print("apply_snapshot: entity %s not found" % entry["name"])
 
 		elif entry["type"] == "event":
 			# print("Network event received: %s" % entry["data"])
@@ -58,37 +71,19 @@ func _create_entity(initial_state: Dictionary):
 
 func _create_weapon_pickup(initial_state: Dictionary):
 	print("_create_weapon_pickup: %s" % initial_state)
-	var pickup = weapon_pickup_scene.instance()
+	var pickup = _entity_factory.create_weapon_pickup(initial_state)
+	print(pickup)
 
-	# Disable auto-registration with replication server
 	var network_rep = pickup.get_node("WeaponPickupNetworkReplication")
-	network_rep.register_with_replication_server = false
-
-	# Add player to world and call _ready()
-	_world.add_child(pickup)
-
 	register_entity(network_rep)
 	network_rep.set_initial_state(initial_state)
 
 
 func _create_player_entity(initial_state: Dictionary):
 	print("_create_player_entity: %s" % initial_state)
-	var player = player_scene.instance()
-	# Disable auto-registration with replication server
+	var player = _entity_factory.create_player(initial_state)
+
 	var network_rep = player.get_node("NetworkReplication")
-	network_rep.register_with_replication_server = false
-
-	# Enable auto-registration with player command collector
-	var cmd_generator = player.get_node("PlayerCommandGenerator")
-	cmd_generator.register_with_collector = true
-
-	# Disable player_cmd receiver on client
-	var cmd_receiver = player.get_node("PlayerCommandReceiver")
-	cmd_receiver.enabled = false
-
-	# Add player to world and call _ready()
-	_world.add_child(player)
-
 	register_entity(network_rep)
 	network_rep.set_initial_state(initial_state)
 

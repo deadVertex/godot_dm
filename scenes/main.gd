@@ -41,8 +41,11 @@ onready var _weapon_pickup_spawner: WeaponPickupSpawner = $WeaponPickupSpawner
 # - Unit tests!
 # - Buffer player commands?
 # - Multiplayer shooting [x]
-# - Multiple weapons (shotgun) [ ]
-# - Weapon pickups! [ ]
+# - Multiple weapons (shotgun) [x]
+# - Weapon pickups! [-]
+# - Deleting network replicated entities [ ]
+# - Switch to ids for network entities
+
 
 
 func _ready() -> void:

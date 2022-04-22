@@ -50,6 +50,10 @@ window/size/test_height=600
 
 main_run_args="--connect"
 
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/gut/plugin.cfg" )
+
 [input]
 
 move_forwards={
