@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://scenes/maps/TestMap.tscn" type="PackedScene" id=2]
@@ -12,6 +12,8 @@
 [ext_resource path="res://scenes/player_command_collector.gd" type="Script" id=10]
 [ext_resource path="res://scenes/player_command_router.gd" type="Script" id=11]
 [ext_resource path="res://scenes/prefabs/bullet_hole.tscn" type="PackedScene" id=12]
+[ext_resource path="res://scenes/weapon_pickup_spawner.gd" type="Script" id=13]
+[ext_resource path="res://scenes/prefabs/weapon_pickup.tscn" type="PackedScene" id=14]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -43,9 +45,15 @@ script = ExtResource( 9 )
 world_path = NodePath("../World")
 player_scene = ExtResource( 7 )
 bullet_hole_prefab = ExtResource( 12 )
+weapon_pickup_scene = ExtResource( 14 )
 
 [node name="PlayerCommandCollector" type="Node" parent="."]
 script = ExtResource( 10 )
 
 [node name="PlayerCommandRouter" type="Node" parent="."]
 script = ExtResource( 11 )
+
+[node name="WeaponPickupSpawner" type="Node" parent="."]
+script = ExtResource( 13 )
+world_path = NodePath("../World")
+weapon_pickup_scene = ExtResource( 14 )

@@ -17,6 +17,7 @@ func _ready():
 
 func register_entity(entity: NetworkReplication):
 	# print("entity.connect network_event")
+	# TODO: Make this optional
 	var error = entity.connect(
 		"network_event", self, "_on_entity_network_event"
 	)

@@ -1,19 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scenes/prefabs/weapon_pickup.gd" type="Script" id=1]
 [ext_resource path="res://assets/meshes/kenny_nl_weapon_pack/shotgun.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://scenes/prefabs/network_replication.gd" type="Script" id=3]
 
-[sub_resource type="BoxShape" id=3]
-extents = Vector3( 0.5, 0.5, 0.5 )
-
-[sub_resource type="SpatialMaterial" id=7]
-albedo_color = Color( 0.509804, 0.509804, 0.509804, 1 )
-
-[sub_resource type="CylinderMesh" id=4]
-material = SubResource( 7 )
-top_radius = 0.45
-bottom_radius = 0.5
-height = 0.1
+[sub_resource type="SphereShape" id=7]
+radius = 0.75
 
 [sub_resource type="Animation" id=5]
 resource_name = "Idle"
@@ -26,8 +18,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 0.5, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 0.5, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1, 2, 3, 4 )
+"points": PoolRealArray( 0, -0.25, 0, 0.2, -0.305667, -0.5, -0.3, 0.185908, 0.2, 0.26595, 0, -0.2, -0.166647, 0.2, 0.258838, 0.5, -0.2, -0.177971, 0.2, -0.186396, 0, -0.2, 0.19986, 0.3, -0.263539, -0.5, -0.3, 0.303864, 0.2, 0.253312, 0, -0.2, -0.196136, 0.2, 0.288327, 0.5, -0.4, -0.304353, 0.2, -0.287502, 0, -0.3, 0.229349, 0.3, -0.229838 ),
+"times": PoolRealArray( 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4 )
 }
 tracks/1/type = "bezier"
 tracks/1/path = NodePath("WeaponOrigin:rotation_degrees:y")
@@ -105,17 +97,12 @@ tracks/5/keys = {
 
 [node name="WeaponPickup" type="Spatial"]
 script = ExtResource( 1 )
+weapon = 1
 
 [node name="Area" type="Area" parent="."]
 
 [node name="CollisionShape" type="CollisionShape" parent="Area"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
-shape = SubResource( 3 )
-
-[node name="BaseMesh" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0 )
-mesh = SubResource( 4 )
-material/0 = null
+shape = SubResource( 7 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Idle"
@@ -170,8 +157,9 @@ light_color = Color( 0.231373, 0.92549, 0.647059, 1 )
 light_energy = 4.0
 omni_range = 1.0
 
-[node name="RespawnTimer" type="Timer" parent="."]
-wait_time = 30.0
+[node name="WeaponPickupNetworkReplication" type="Node" parent="."]
+script = ExtResource( 3 )
+root_path = NodePath("..")
+entity_type = 1
 
 [connection signal="body_entered" from="Area" to="." method="_on_area_body_entered"]
-[connection signal="timeout" from="RespawnTimer" to="." method="_on_respawn_timer_timeout"]

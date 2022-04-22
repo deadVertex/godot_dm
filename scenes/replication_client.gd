@@ -2,11 +2,12 @@ extends Node
 
 const NetworkReplication = preload("res://scenes/prefabs/network_replication.gd")
 
-export var world_path: NodePath
-export var player_scene: PackedScene
+export(NodePath) var world_path
+export(PackedScene) var player_scene
 #export var blood_splatter_fx_prefab: PackedScene
-export var bullet_hole_prefab: PackedScene
-export var bullet_hole_offset := 0.001
+export(PackedScene) var bullet_hole_prefab
+export(float) var bullet_hole_offset = 0.001
+export(PackedScene) var weapon_pickup_scene
 
 var _world: Node
 var _entities: Array = []  # Change to dict with entity IDs?
@@ -32,8 +33,7 @@ func apply_snapshot(snapshot):
 	# print("apply_snapshot: snapshot.size() = %d" % snapshot.size())
 	for entry in snapshot:
 		if entry["type"] == "create":
-			# print("Creating player entity")
-			_create_player_entity(entry["initial_state"])
+			_create_entity(entry["initial_state"])
 
 		elif entry["type"] == "update":
 			#print("Update player entity")
@@ -46,8 +46,33 @@ func apply_snapshot(snapshot):
 			_process_event(entry["data"])
 
 
+func _create_entity(initial_state: Dictionary):
+	match initial_state["type"]:
+		NetworkReplication.EntityType.PLAYER:
+			_create_player_entity(initial_state)
+		NetworkReplication.EntityType.OTHER:
+			_create_weapon_pickup(initial_state)
+		_:
+			print("Unknown type: %s" % initial_state)
+
+
+func _create_weapon_pickup(initial_state: Dictionary):
+	print("_create_weapon_pickup: %s" % initial_state)
+	var pickup = weapon_pickup_scene.instance()
+
+	# Disable auto-registration with replication server
+	var network_rep = pickup.get_node("WeaponPickupNetworkReplication")
+	network_rep.register_with_replication_server = false
+
+	# Add player to world and call _ready()
+	_world.add_child(pickup)
+
+	register_entity(network_rep)
+	network_rep.set_initial_state(initial_state)
+
+
 func _create_player_entity(initial_state: Dictionary):
-	# print("_create_player_entity: %s" % initial_state)
+	print("_create_player_entity: %s" % initial_state)
 	var player = player_scene.instance()
 	# Disable auto-registration with replication server
 	var network_rep = player.get_node("NetworkReplication")

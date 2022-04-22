@@ -6,6 +6,7 @@ const ReplicationServer = preload("res://scenes/replication_server.gd")
 const ReplicationClient = preload("res://scenes/replication_client.gd")
 const PlayerCommandRouter = preload("res://scenes/player_command_router.gd")
 const PlayerCommandCollector = preload("res://scenes/player_command_collector.gd")
+const WeaponPickupSpawner = preload("res://scenes/weapon_pickup_spawner.gd")
 
 const VERSION_MAJOR: int = 0
 const VERSION_MINOR: int = 1
@@ -27,6 +28,7 @@ onready var _replication_server: ReplicationServer = $ReplicationServer
 onready var _replication_client: ReplicationClient = $ReplicationClient
 onready var _player_command_collector: PlayerCommandCollector = $PlayerCommandCollector
 onready var _player_command_router: PlayerCommandRouter = $PlayerCommandRouter
+onready var _weapon_pickup_spawner: WeaponPickupSpawner = $WeaponPickupSpawner
 
 # TODO List
 # - System for clients to request player spawns [x]
@@ -107,6 +109,8 @@ func _load_map() -> void:
 	assert(map)
 	var scene = map.instance()
 	_world.add_child(scene)
+	if _is_server:
+		_weapon_pickup_spawner.spawn_weapon()
 
 
 func _physics_process(_delta: float) -> void:

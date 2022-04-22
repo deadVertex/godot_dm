@@ -10,11 +10,17 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node",
+"class": "NetworkReplication",
+"language": "GDScript",
+"path": "res://scenes/prefabs/network_replication.gd"
+}, {
+"base": "Node",
 "class": "NetworkTransport",
 "language": "GDScript",
 "path": "res://scenes/network_transport.gd"
 } ]
 _global_script_class_icons={
+"NetworkReplication": "",
 "NetworkTransport": ""
 }
 

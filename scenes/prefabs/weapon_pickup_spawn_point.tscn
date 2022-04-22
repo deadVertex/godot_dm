@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="SpatialMaterial" id=7]
+albedo_color = Color( 0.509804, 0.509804, 0.509804, 1 )
+
+[sub_resource type="CylinderMesh" id=4]
+material = SubResource( 7 )
+top_radius = 0.45
+bottom_radius = 0.5
+height = 0.1
+
+[node name="WeaponPickupSpawnPoint" type="Spatial"]
+
+[node name="BaseMesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0 )
+mesh = SubResource( 4 )
+material/0 = null
+
+[node name="SpawnPoint" type="Spatial" parent="." groups=["weapon_spawn"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
