@@ -3,7 +3,7 @@ extends Node
 
 signal network_event(event)
 
-enum EntityType {PLAYER, OTHER}
+enum EntityType { PLAYER, OTHER }
 
 const Player = preload("res://scenes/prefabs/player.gd")
 const ViewModel = preload("res://scenes/prefabs/view_model.gd")
@@ -32,7 +32,9 @@ func _ready():
 
 		if entity_type == EntityType.PLAYER:
 			# Capture bullet impact signal and convert to network event
-			var error = _body.connect("bullet_impact", self, "_on_bullet_impact")
+			var error = _body.connect(
+				"bullet_impact", self, "_on_bullet_impact"
+			)
 			assert(error == OK)
 			# print("_body.connect bullet_impact")
 

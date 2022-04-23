@@ -47,7 +47,6 @@ onready var _weapon_pickup_spawner: WeaponPickupSpawner = $WeaponPickupSpawner
 # - Switch to ids for network entities
 
 
-
 func _ready() -> void:
 	var args = _parse_cmdline_args(OS.get_cmdline_args())
 	if args["listen"]:

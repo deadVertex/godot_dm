@@ -47,12 +47,11 @@ func queue_event(event: Dictionary):
 func create_snapshot_for_client(client_id: int):
 	var snapshot = []
 	for entity in _entities:
-		# TODO: Don't use entity name
-		if _clients[client_id].has(entity.get_name()):
+		if _clients[client_id].has(entity.get_id()):
 			# Update
 			var entry = {
 				"type": "update",
-				"name": entity.get_name(),
+				"id": entity.get_id(),
 				"state": entity.get_state()
 			}
 			snapshot.append(entry)
@@ -66,7 +65,7 @@ func create_snapshot_for_client(client_id: int):
 			snapshot.append(entry)
 			# print("create_snapshot_for_client: %s" % entry)
 			# FIXME: We should not be modifying any data here!
-			_clients[client_id].append(entity.get_name())
+			_clients[client_id].append(entity.get_id())
 
 	for event in _events:
 		var entry = {"type": "event", "data": event}

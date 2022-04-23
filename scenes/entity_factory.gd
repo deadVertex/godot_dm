@@ -2,6 +2,7 @@ var world: Node
 var player_scene: PackedScene
 var weapon_pickup_scene: PackedScene
 
+
 func create_player(initial_state: Dictionary):
 	print("_create_player_entity: %s" % initial_state)
 

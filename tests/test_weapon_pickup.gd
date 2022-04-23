@@ -22,25 +22,24 @@ func test_overlap_area():
 	# Then the player receives the weapon from the pickup
 	assert_called(player, "give_weapon", [ViewModel.Weapon.SHOTGUN])
 
-
 # TODO: Implement factory to fix resource leaks
 #func test_weapon_spawn_system():
-	## Given a weapon spawner
-	#var spawner = WeaponPickupSpawner.new()
-	#var world = add_child_autofree(double(Spatial).new())
-	#spawner.world_path = world.get_path()
+## Given a weapon spawner
+#var spawner = WeaponPickupSpawner.new()
+#var world = add_child_autofree(double(Spatial).new())
+#spawner.world_path = world.get_path()
 
-	#spawner.weapon_pickup_scene = WeaponPickup
-	#add_child_autofree(spawner)
+#spawner.weapon_pickup_scene = WeaponPickup
+#add_child_autofree(spawner)
 
-	## And a spawn point
-	#var spawn_point = add_child_autofree(WeaponPickupSpawnPoint.instance())
-	#spawn_point.global_transform.origin = Vector3(1, 2, 3)
+## And a spawn point
+#var spawn_point = add_child_autofree(WeaponPickupSpawnPoint.instance())
+#spawn_point.global_transform.origin = Vector3(1, 2, 3)
 
-	## When we request to spawn a weapon
-	#spawner.spawn_weapon()
+## When we request to spawn a weapon
+#spawner.spawn_weapon()
 
-	## Then a weapon pickup is added to the world
-	#var expected = spawn_point.get_node("SpawnPoint").global_transform.origin
-	#print(expected)
-	##assert_eq(pickup.global_transform.origin, expected, Vector3(0.0001, 0.0001, 0.0001))
+## Then a weapon pickup is added to the world
+#var expected = spawn_point.get_node("SpawnPoint").global_transform.origin
+#print(expected)
+##assert_eq(pickup.global_transform.origin, expected, Vector3(0.0001, 0.0001, 0.0001))

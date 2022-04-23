@@ -8,6 +8,7 @@ export var weapon_pickup_scene: PackedScene
 
 var _world: Node
 
+
 func _ready():
 	if world_path:
 		_world = get_node(world_path)
@@ -32,7 +33,7 @@ func _create_weapon_pickup_entity(position: Vector3):
 	var weapon_pickup = weapon_pickup_scene.instance()
 	weapon_pickup.global_transform.origin = position
 	weapon_pickup.weapon = ViewModel.Weapon.SHOTGUN
-	
+
 	# Add it to the world (note it is not tied to the spawn point
 	# in any way)
 	_world.add_child(weapon_pickup)
