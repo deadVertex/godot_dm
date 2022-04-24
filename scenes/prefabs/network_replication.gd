@@ -2,6 +2,7 @@ class_name NetworkReplication
 extends Node
 
 signal network_event(event)
+signal network_entity_deleted(id)
 
 enum EntityType { PLAYER, OTHER }
 

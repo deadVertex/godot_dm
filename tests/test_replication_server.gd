@@ -85,6 +85,24 @@ func test_replication_server_tracks_id():
 	assert_eq(update_snapshot[0]["id"], 1)
 
 
+func test_replication_server_listens_for_entity_deletion():
+	var replication_server = autofree(ReplicationServer.new())
+
+	var entity = double(NetworkReplication).new()
+	stub(entity, "get_id").to_return(1)
+	replication_server.register_entity(entity)
+	entity.emit_signal("network_entity_deleted", 1)
+
+	assert_eq(replication_server._entities.size(), 0)
+
+	var client_id = 1
+	replication_server.register_client(client_id)
+	replication_server.add_entity_to_client(client_id, 1)
+
+	var ids_to_delete = replication_server.get_entity_ids_to_delete_for_client(client_id)
+	assert_eq(ids_to_delete[0], 1)
+
+
 func test_replication_client():
 	var entity_factory = double(EntityFactory).new()
 	var weapon_pickup = double(WeaponPickupScene).instance()

@@ -44,7 +44,7 @@ onready var _weapon_pickup_spawner: WeaponPickupSpawner = $WeaponPickupSpawner
 # - Multiple weapons (shotgun) [x]
 # - Weapon pickups! [-]
 # - Deleting network replicated entities [ ]
-# - Switch to ids for network entities
+# - Switch to ids for network entities [x]
 
 
 func _ready() -> void:
