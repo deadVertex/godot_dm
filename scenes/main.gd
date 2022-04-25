@@ -38,13 +38,18 @@ onready var _weapon_pickup_spawner: WeaponPickupSpawner = $WeaponPickupSpawner
 #   it to the player entities on the clients [x]
 # - Deployment automation [x]
 # - Make sure we are using types everywhere! [x]
-# - Unit tests!
+# - Unit tests! [ ]
 # - Buffer player commands?
 # - Multiplayer shooting [x]
 # - Multiple weapons (shotgun) [x]
-# - Weapon pickups! [-]
-# - Deleting network replicated entities [ ]
+# - Weapon pickups! [x]
+# - Deleting network replicated entities [x]
 # - Switch to ids for network entities [x]
+# - Separate network replication nodes for client and server [ ]
+# - Auto register entities to ReplicationClient [ ]
+# - Move weapon logic into own node? [ ]
+# - Make shotgun semi auto [ ]
+
 
 
 func _ready() -> void:

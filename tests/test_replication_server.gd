@@ -7,10 +7,6 @@ const EntityFactory = preload("res://scenes/entity_factory.gd")
 
 const WeaponPickupScene = preload("res://scenes/prefabs/weapon_pickup.tscn")
 
-# TODO: Auto register entities to ReplicationClient
-# Separate network replication nodes for client and server
-
-
 func test_network_replication_emits_signal_on_delete():
 	var network_rep = NetworkReplication.new()
 	network_rep.entity_type = NetworkReplication.EntityType.OTHER

@@ -13,7 +13,8 @@ export var speed: float = 120.0
 export var jump_impulse: float = 12.0
 export var gravity: float = -20.0
 export var friction: float = 8.0
-export var time_between_shots: float = 0.18
+export var uzi_time_between_shots: float = 0.18
+export var shotgun_time_between_shots: float = 1.0
 
 var velocity: Vector3 = Vector3.ZERO
 
@@ -79,7 +80,16 @@ func apply_player_cmd(cmd, delta):
 	if cmd["primary_attack"]:
 		if _time_until_next_shot <= 0.0:
 			_handle_shooting()
+
+			# Calculate time to wait between shots for each weapon
+			var time_between_shots = 0.0
+			if _active_weapon == ViewModel.Weapon.SHOTGUN:
+				time_between_shots = shotgun_time_between_shots
+			else:
+				time_between_shots = uzi_time_between_shots
+
 			_time_until_next_shot = time_between_shots
+
 			# Set animation state which we replicate to client
 			_current_view_model_animation = ViewModel.ViewModelAnimation.FIRE
 	else:
