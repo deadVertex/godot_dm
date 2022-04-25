@@ -35,11 +35,9 @@ func test_network_replication_deletes_root_on_client():
 func test_replication_server():
 	var replication_server = autofree(ReplicationServer.new())
 
-	print("register_entity")
 	var entity = double(NetworkReplication).new()
 	stub(entity, "get_id").to_return(1)
 	replication_server.register_entity(entity)
-	print("register_client")
 
 	var client_id = 1
 	replication_server.register_client(client_id)
@@ -234,7 +232,7 @@ func test_replication_client_update() -> void:
 	# When we register an entity
 	var entity = autofree(double(NetworkReplication).new())
 	stub(entity, "get_id").to_return(1)
-	replication_client.register_entity(entity)
+	replication_client.register_entity(1, entity)
 
 	# Then we can retrieve it by name
 	assert_eq(replication_client.get_replicated_entity_by_id(1), entity)
@@ -257,7 +255,7 @@ func test_replication_client_deletes_entity() -> void:
 
 	var network_rep = double(NetworkReplication).new()
 	stub(network_rep, "get_id").to_return(1)
-	replication_client.register_entity(network_rep)
+	replication_client.register_entity(1, network_rep)
 
 	# When we receive an delete snapshot
 	var snapshot = []

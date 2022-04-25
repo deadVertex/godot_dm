@@ -14,7 +14,7 @@ export(float) var bullet_hole_offset = 0.001
 export(PackedScene) var weapon_pickup_scene
 
 var _world: Node
-var _entities: Array = []  # Change to dict with entity IDs?
+var _entities: Dictionary = {}
 var _entity_factory: EntityFactory
 
 
@@ -28,18 +28,12 @@ func _ready() -> void:
 	_entity_factory.weapon_pickup_scene = weapon_pickup_scene
 
 
-func register_entity(entity: NetworkReplication) -> void:
-	_entities.append(entity)
+func register_entity(id: int, entity: NetworkReplication) -> void:
+	_entities[id] = entity
 
 
-# FIXME: This is proof that _entities should be a dict!
 func get_replicated_entity_by_id(id: int) -> NetworkReplication:
-	var result: NetworkReplication = null
-	for entity in _entities:
-		if entity.get_id() == id:
-			result = entity
-			break
-
+	var result = _entities.get(id) as NetworkReplication
 	return result
 
 
@@ -78,7 +72,7 @@ func _create_entity(id: int, initial_state: Dictionary) -> void:
 			print("Unknown type: %s" % initial_state)
 
 	entity.set_id(id)
-	register_entity(entity)
+	register_entity(id, entity)
 	entity.set_initial_state(initial_state)
 
 
@@ -122,7 +116,7 @@ func _delete_entity(id: int) -> void:
 	print("_delete_entity: %d" % id)
 	var entity = get_replicated_entity_by_id(id)
 	if entity:
-		_entities.erase(entity)
+		_entities.erase(id)
 		entity.delete_entity()
 	else:
 		print("Unable to find entity for id %d" % id)
