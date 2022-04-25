@@ -22,6 +22,7 @@ var _rng = RandomNumberGenerator.new()
 var _active_weapon: int = ViewModel.Weapon.UZI
 var _current_view_model_animation: int = ViewModel.ViewModelAnimation.IDLE
 var _weapons := {ViewModel.Weapon.UZI: true}
+var _previous_cmd: Dictionary = {}
 
 onready var head: Spatial = $Head
 
@@ -57,7 +58,8 @@ func apply_player_cmd(cmd, delta):
 	set_view_angles(cmd["view_angles"])
 
 	if cmd["jump"] and is_on_floor():
-		velocity.y = jump_impulse
+		if not _previous_cmd["jump"]:
+			velocity.y = jump_impulse
 
 	velocity.x = (
 		velocity.x
@@ -82,6 +84,8 @@ func apply_player_cmd(cmd, delta):
 			_current_view_model_animation = ViewModel.ViewModelAnimation.FIRE
 	else:
 		_current_view_model_animation = ViewModel.ViewModelAnimation.IDLE
+	
+	_previous_cmd = cmd
 
 
 # NOTE: This should only be run on the server

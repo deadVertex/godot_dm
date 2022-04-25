@@ -38,7 +38,7 @@ func build_player_command():
 	if Input.is_action_pressed("move_right"):
 		right += 1.0
 
-	if Input.is_action_just_pressed("jump"):
+	if Input.is_action_pressed("jump"):
 		jump = true
 
 	if Input.is_action_pressed("fire"):
