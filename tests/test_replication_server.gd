@@ -8,6 +8,28 @@ const EntityFactory = preload("res://scenes/entity_factory.gd")
 const WeaponPickupScene = preload("res://scenes/prefabs/weapon_pickup.tscn")
 
 # TODO: Auto register entities to ReplicationClient
+# Separate network replication nodes for client and server
+
+
+func test_network_replication_emits_signal_on_delete():
+	var network_rep = NetworkReplication.new()
+	network_rep.entity_type = NetworkReplication.EntityType.OTHER
+	add_child(network_rep)
+	watch_signals(network_rep)
+	remove_child(network_rep)
+	assert_signal_emitted(network_rep, "network_entity_deleted")
+	network_rep.free()
+
+
+func test_network_replication_deletes_root_on_client():
+	var entity = WeaponPickupScene.instance()
+	var network_rep = entity.get_node("WeaponPickupNetworkReplication")
+	assert_not_null(network_rep)
+	network_rep.register_with_replication_server = false # i.e. this is on the client
+	add_child(entity)
+
+	network_rep.delete_entity()
+	assert_freed(entity, "entity")
 
 
 func test_replication_server():
@@ -103,10 +125,56 @@ func test_replication_server_listens_for_entity_deletion():
 	assert_eq(ids_to_delete[0], 1)
 
 
+func test_replication_server_generate_deletion_snapshot():
+	var replication_server = autofree(ReplicationServer.new())
+
+	var entity = double(NetworkReplication).new()
+	stub(entity, "get_id").to_return(1)
+	replication_server.register_entity(entity)
+	entity.emit_signal("network_entity_deleted", 1)
+
+	var client_id = 1
+	replication_server.register_client(client_id)
+	replication_server.add_entity_to_client(client_id, 1)
+
+	var snapshot = replication_server.create_snapshot_for_client(
+		client_id
+	)
+	assert_eq(snapshot[0]["type"], "delete")
+	assert_eq(snapshot[0]["id"], 1)
+
+
+func test_replication_server_only_generates_deletion_event_once():
+	var replication_server = autofree(ReplicationServer.new())
+
+	var entity = double(NetworkReplication).new()
+	stub(entity, "get_id").to_return(1)
+	replication_server.register_entity(entity)
+	entity.emit_signal("network_entity_deleted", 1)
+
+	var client_id = 1
+	replication_server.register_client(client_id)
+	replication_server.add_entity_to_client(client_id, 1)
+
+	var snapshot = replication_server.create_snapshot_for_client(
+		client_id
+	)
+	assert_eq(snapshot.size(), 1)
+	assert_eq(snapshot[0]["type"], "delete")
+
+	var new_snapshot = replication_server.create_snapshot_for_client(
+		client_id
+	)
+	assert_eq(new_snapshot.size(), 0)
+
+
 func test_replication_client():
 	var entity_factory = double(EntityFactory).new()
 	var weapon_pickup = double(WeaponPickupScene).instance()
 	stub(entity_factory, "create_weapon_pickup").to_return(weapon_pickup)
+
+	var network_rep = autofree(double(NetworkReplication).new())
+	replace_node(weapon_pickup, "WeaponPickupNetworkReplication", network_rep)
 
 	# Given a replication client
 	var replication_client = autofree(ReplicationClient.new())
@@ -180,6 +248,29 @@ func test_replication_client_update() -> void:
 	assert_called(entity, "set_state")
 
 
+func test_replication_client_deletes_entity() -> void:
+	var entity_factory = double(EntityFactory).new()
+
+	# Given a replication client with an entity
+	var replication_client = autofree(ReplicationClient.new())
+	replication_client._entity_factory = entity_factory
+
+	var network_rep = double(NetworkReplication).new()
+	stub(network_rep, "get_id").to_return(1)
+	replication_client.register_entity(network_rep)
+
+	# When we receive an delete snapshot
+	var snapshot = []
+	snapshot.append({"type": "delete", "id": 1})
+	replication_client.apply_snapshot(snapshot)
+
+	# Then we free the entity
+	assert_called(network_rep, "delete_entity")
+
+	# And remove it from the entities list
+	assert_eq(replication_client._entities.size(), 0)
+
+
 func test_replication_integration() -> void:
 	var server = autofree(ReplicationServer.new())
 	var client = autofree(ReplicationClient.new())
@@ -211,3 +302,16 @@ func test_replication_integration() -> void:
 	var client_entity = entity_factory.world.get_node("WeaponPickup")
 	assert_not_null(client_entity)
 	assert_eq(client_entity.global_transform.origin, Vector3(1, 2, 3))
+
+	# Delete server-side entity
+	remove_child(server_entity)
+
+	# Generate new snapshot on the server and process on client
+	snapshots = server.generate_snapshots_for_all_clients()
+	assert_has(snapshots, client_id)
+	snapshot = snapshots[client_id]
+
+	client.apply_snapshot(snapshot)
+
+	# Check that the entity is removed on the client
+	assert_freed(client_entity, "client_entity")

@@ -102,3 +102,18 @@ func set_id(id: int) -> void:
 
 func get_id() -> int:
 	return _id
+
+
+func _exit_tree() -> void:
+	print("_exit_tree")
+	emit_signal("network_entity_deleted", _id)
+
+
+# TODO: This might need to use queue_free() instead
+func delete_entity() -> void:
+	if entity_type == EntityType.PLAYER:
+		_body.free()
+	elif entity_type == EntityType.OTHER:
+		_root.free()
+	else:
+		print("delete_entity: Unknown entity type: %d" % entity_type)

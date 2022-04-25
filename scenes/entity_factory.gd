@@ -29,6 +29,7 @@ func create_player(initial_state: Dictionary):
 func create_weapon_pickup(initial_state: Dictionary):
 	print("_create_weapon_pickup: %s" % initial_state)
 	var pickup = weapon_pickup_scene.instance()
+	pickup.is_server = false
 
 	# Disable auto-registration with replication server
 	var network_rep = pickup.get_node("WeaponPickupNetworkReplication")

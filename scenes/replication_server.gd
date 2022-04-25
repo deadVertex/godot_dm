@@ -79,6 +79,16 @@ func create_snapshot_for_client(client_id: int) -> Array:
 			# FIXME: We should not be modifying any data here!
 			add_entity_to_client(client_id, id)
 
+	var ids_to_delete = get_entity_ids_to_delete_for_client(client_id)
+	for id in ids_to_delete:
+		var entry = {
+			"type": "delete",
+			"id": id,
+		}
+		snapshot.append(entry)
+		# Remove entity from client list
+		_clients[client_id].erase(id)
+
 	for event in _events:
 		var entry = {"type": "event", "data": event}
 		# print("Network event sent: %s" % event)
@@ -99,6 +109,7 @@ func generate_snapshots_for_all_clients() -> Dictionary:
 
 
 func _on_network_entity_deleted(id: int) -> void:
+	print("_on_network_entity_deleted")
 	if not _entities.erase(id):
 		print("Unable to find entity id %d" % id)
 

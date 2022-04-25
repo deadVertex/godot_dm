@@ -44,10 +44,9 @@ func get_replicated_entity_by_id(id: int) -> NetworkReplication:
 
 
 func apply_snapshot(snapshot: Array) -> void:
-	print("apply_snapshot: snapshot.size() = %d" % snapshot.size())
+	#print("apply_snapshot: snapshot.size() = %d" % snapshot.size())
 	for entry in snapshot:
 		if entry["type"] == "create":
-			print("apply_snapshot: Create entity")
 			_create_entity(entry["id"], entry["initial_state"])
 
 		elif entry["type"] == "update":
@@ -59,12 +58,16 @@ func apply_snapshot(snapshot: Array) -> void:
 				# TODO: What do we do if entity is not found?
 				print("apply_snapshot: entity id %s not found" % entry["id"])
 
+		elif entry["type"] == "delete":
+			_delete_entity(entry["id"])
+
 		elif entry["type"] == "event":
 			# print("Network event received: %s" % entry["data"])
 			_process_event(entry["data"])
 
 
 func _create_entity(id: int, initial_state: Dictionary) -> void:
+	print("_create_entity: id: %s initial_state: %s" % [id, initial_state])
 	var entity = null
 	match initial_state["type"]:
 		NetworkReplication.EntityType.PLAYER:
@@ -113,3 +116,13 @@ func _spawn_bullet_hole(position: Vector3, normal: Vector3) -> void:
 		position + normal * bullet_hole_offset, position + normal, up
 	)
 	_world.add_child(bullet_hole)
+
+
+func _delete_entity(id: int) -> void:
+	print("_delete_entity: %d" % id)
+	var entity = get_replicated_entity_by_id(id)
+	if entity:
+		_entities.erase(entity)
+		entity.delete_entity()
+	else:
+		print("Unable to find entity for id %d" % id)
