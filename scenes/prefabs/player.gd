@@ -26,10 +26,16 @@ var _weapons := {ViewModel.Weapon.UZI: true}
 var _previous_cmd: Dictionary = {}
 
 onready var head: Spatial = $Head
+onready var camera: Camera = $Head/Camera
 
 
 func _ready():
 	_rng.randomize()
+	camera.current = false
+
+
+func set_locally_controlled(is_locally_controlled: bool) -> void:
+	camera.current = is_locally_controlled
 
 
 func _get_movement_direction(cmd):
@@ -151,6 +157,7 @@ func get_view_angles() -> Vector3:
 
 
 func set_view_angles(view_angles: Vector3) -> void:
+	print("%s - set_view_angles: %s" % [self, view_angles])
 	rotation.y = view_angles.y
 	head.rotation.x = clamp(view_angles.x, -PI * 0.5, PI * 0.5)
 

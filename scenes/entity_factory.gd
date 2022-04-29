@@ -12,10 +12,6 @@ func create_player(initial_state: Dictionary):
 	var network_rep = player.get_node("NetworkReplication")
 	network_rep.register_with_replication_server = false
 
-	# Enable auto-registration with player command collector
-	var cmd_generator = player.get_node("PlayerCommandGenerator")
-	cmd_generator.register_with_collector = true
-
 	# Disable player_cmd receiver on client
 	var cmd_receiver = player.get_node("PlayerCommandReceiver")
 	cmd_receiver.enabled = false

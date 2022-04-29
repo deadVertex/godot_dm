@@ -6,6 +6,7 @@ const NetworkReplication = preload("res://scenes/prefabs/network_replication.gd"
 const EntityFactory = preload("res://scenes/entity_factory.gd")
 
 const WeaponPickupScene = preload("res://scenes/prefabs/weapon_pickup.tscn")
+const PlayerScene = preload("res://scenes/prefabs/player.tscn")
 
 func test_network_replication_emits_signal_on_delete():
 	var network_rep = NetworkReplication.new()
@@ -26,6 +27,25 @@ func test_network_replication_deletes_root_on_client():
 
 	network_rep.delete_entity()
 	assert_freed(entity, "entity")
+
+
+func test_network_replication_initial_state():
+	var entity = PlayerScene.instance()
+	add_child_autofree(entity)
+	var network_rep = entity.get_node("NetworkReplication")
+	assert_not_null(network_rep)
+	network_rep.controlling_client_id = 123
+
+	# Test locally controlled
+	var initial_state = network_rep.get_initial_state(123)
+	assert_has(initial_state, "is_locally_controlled")
+	assert_true(initial_state["is_locally_controlled"])
+
+	# Test not locally controlled
+	initial_state = network_rep.get_initial_state(12)
+	assert_does_not_have(initial_state, "is_locally_controlled")
+
+
 
 
 func test_replication_server():

@@ -34,7 +34,6 @@ script = ExtResource( 3 )
 script = ExtResource( 6 )
 world_path = NodePath("../World")
 player_scene = ExtResource( 7 )
-player_command_router_path = NodePath("../PlayerCommandRouter")
 
 [node name="ReplicationServer" type="Node" parent="."]
 script = ExtResource( 8 )

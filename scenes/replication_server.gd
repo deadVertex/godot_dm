@@ -72,7 +72,7 @@ func create_snapshot_for_client(client_id: int) -> Array:
 			var entry = {
 				"type": "create",
 				"id": id,
-				"initial_state": entity.get_initial_state()
+				"initial_state": entity.get_initial_state(client_id)
 			}
 			snapshot.append(entry)
 			# print("create_snapshot_for_client: %s" % entry)

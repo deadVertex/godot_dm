@@ -48,7 +48,9 @@ onready var _weapon_pickup_spawner: WeaponPickupSpawner = $WeaponPickupSpawner
 # - Separate network replication nodes for client and server [ ]
 # - Auto register entities to ReplicationClient [ ]
 # - Move weapon logic into own node? [ ]
-# - Make shotgun semi auto [ ]
+# - Make shotgun semi auto [/]
+# - Test with multiple clients, (its completely broken)
+# - Fix Player view angles are getting messed up with multiple clients [ ]
 
 
 
@@ -134,7 +136,19 @@ func _update_server() -> void:
 		var type = entry["message"]["type"]
 		if type == "spawn_request":
 			print("Player spawn requested!")
-			_player_spawner.spawn_player(entry["sender_id"])
+			var player = _player_spawner.spawn_player()
+
+			# Connect new player entity to command router
+			var client_id = entry["sender_id"]
+			var cmd_receiver = player.get_node("PlayerCommandReceiver")
+			assert(cmd_receiver)
+			_player_command_router.register_receiver(cmd_receiver, client_id)
+
+			# Set client id
+			var network_rep = player.get_node("NetworkReplication")
+			assert(network_rep)
+			network_rep.controlling_client_id = client_id
+
 		elif type == "player_cmd":
 			#print("Player command received")
 			_player_command_router.route_cmd(

@@ -12,4 +12,5 @@ func register_receiver(receiver: PlayerCommandReceiver, client_id: int):
 
 func route_cmd(player_cmd: Dictionary, client_id: int):
 	#print("route_cmd: client_id: %d" % client_id)
+	#print("%s receive_player_cmd" % _receivers[client_id])
 	_receivers[client_id].receive_player_cmd(player_cmd)

@@ -84,6 +84,7 @@ func _create_weapon_pickup(initial_state: Dictionary) -> NetworkReplication:
 	return network_rep
 
 
+# TODO: Remove initial state parameter which is not used!
 func _create_player_entity(initial_state: Dictionary) -> NetworkReplication:
 	print("_create_player_entity: %s" % initial_state)
 	var player = _entity_factory.create_player(initial_state)
