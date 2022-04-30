@@ -5,8 +5,9 @@ const PlayerSpawner = preload("res://scenes/player_spawner.gd")
 const ReplicationServer = preload("res://scenes/replication_server.gd")
 const ReplicationClient = preload("res://scenes/replication_client.gd")
 const PlayerCommandRouter = preload("res://scenes/player_command_router.gd")
-const PlayerCommandCollector = preload("res://scenes/player_command_collector.gd")
 const WeaponPickupSpawner = preload("res://scenes/weapon_pickup_spawner.gd")
+const PlayerInputCollector = preload("res://scenes/player_input_collector.gd")
+const Player = preload("res://scenes/prefabs/player.gd")
 
 const VERSION_MAJOR: int = 0
 const VERSION_MINOR: int = 1
@@ -26,9 +27,9 @@ onready var _connect_to_server_window: Node = $UI/MainMenu/ConnectToServerWindow
 onready var _player_spawner: PlayerSpawner = $PlayerSpawner
 onready var _replication_server: ReplicationServer = $ReplicationServer
 onready var _replication_client: ReplicationClient = $ReplicationClient
-onready var _player_command_collector: PlayerCommandCollector = $PlayerCommandCollector
 onready var _player_command_router: PlayerCommandRouter = $PlayerCommandRouter
 onready var _weapon_pickup_spawner: WeaponPickupSpawner = $WeaponPickupSpawner
+onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollector
 
 # TODO List
 # - System for clients to request player spawns [x]
@@ -49,8 +50,10 @@ onready var _weapon_pickup_spawner: WeaponPickupSpawner = $WeaponPickupSpawner
 # - Auto register entities to ReplicationClient [ ]
 # - Move weapon logic into own node? [ ]
 # - Make shotgun semi auto [/]
-# - Test with multiple clients, (its completely broken)
-# - Fix Player view angles are getting messed up with multiple clients [ ]
+# - Test with multiple clients [x]
+# - Fix Player view angles are getting messed up with multiple clients [x]
+# - Able to see other players [ ]
+# - Able to kill other players [ ]
 
 
 
@@ -80,6 +83,11 @@ func _ready() -> void:
 		if error != OK:
 			print("connect_to_server_window.connect: %s" % error)
 
+		error = _replication_client.connect(
+			"player_entity_created", self, "_on_player_entity_created"
+		)
+		assert(error == OK)
+
 		if args["connect"]:
 			_on_connect_to_server("127.0.0.1", 18000)
 
@@ -101,6 +109,15 @@ func _on_connection_accepted(id: int) -> void:
 	# Request spawn
 	var request = {"type": "spawn_request"}
 	_network_transport.send_message_to_server(request)
+
+
+func _on_player_entity_created(player: Player, is_locally_controlled: bool) -> void:
+	print(
+		"_on_player_entity_created: player: %s is_locally_controlled: %s" %
+		[player, is_locally_controlled]
+	)
+	if is_locally_controlled:
+		_player_input_collector.set_player_entity(player)
 
 
 func _parse_cmdline_args(args: PoolStringArray) -> Dictionary:
@@ -175,8 +192,8 @@ func _update_client() -> void:
 			_replication_client.apply_snapshot(data)
 
 	# Collect player command
-	var cmd = _player_command_collector.build_player_command()
-	if cmd:
+	var cmd = _player_input_collector.build_player_command()
+	if not cmd.empty():
 		# Send player command
 		#print("Sending player command")
 		var message = {"type": "player_cmd", "data": cmd}

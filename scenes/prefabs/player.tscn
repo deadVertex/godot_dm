@@ -1,10 +1,9 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scenes/prefabs/player.gd" type="Script" id=1]
 [ext_resource path="res://assets/meshes/kenny_nl_weapon_pack/uziLong.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://assets/meshes/kenny_nl_weapon_pack/shotgun.obj" type="ArrayMesh" id=3]
 [ext_resource path="res://scenes/prefabs/network_replication.gd" type="Script" id=4]
-[ext_resource path="res://scenes/prefabs/player_command_generator.gd" type="Script" id=5]
 [ext_resource path="res://scenes/prefabs/player_command_receiver.gd" type="Script" id=6]
 [ext_resource path="res://scenes/prefabs/view_model.gd" type="Script" id=7]
 
@@ -193,7 +192,6 @@ material = SubResource( 4 )
 collision_layer = 2
 collision_mask = 3
 script = ExtResource( 1 )
-time_between_shots = 0.1
 
 [node name="Head" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.709785, -0.366209 )
@@ -306,11 +304,6 @@ material/0 = null
 transform = Transform( 0.247441, 0, 0, 0, 0.0697744, 3.11567e-09, 0, 3.11567e-09, 0.141053, 0, -0.44088, -0.580967 )
 mesh = SubResource( 5 )
 material/0 = null
-
-[node name="PlayerCommandGenerator" type="Node" parent="."]
-script = ExtResource( 5 )
-register_with_collector = null
-player_path = NodePath("..")
 
 [node name="PlayerCommandReceiver" type="Node" parent="."]
 script = ExtResource( 6 )

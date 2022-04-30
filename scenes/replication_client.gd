@@ -1,5 +1,7 @@
 extends Node
 
+signal player_entity_created(player, is_locally_controlled)
+
 const NetworkReplication = preload("res://scenes/prefabs/network_replication.gd")
 const EntityFactory = preload("res://scenes/entity_factory.gd")
 
@@ -88,6 +90,10 @@ func _create_weapon_pickup(initial_state: Dictionary) -> NetworkReplication:
 func _create_player_entity(initial_state: Dictionary) -> NetworkReplication:
 	print("_create_player_entity: %s" % initial_state)
 	var player = _entity_factory.create_player(initial_state)
+
+	# TODO: Integrate this better
+	var is_locally_controlled = initial_state.has("is_locally_controlled")
+	emit_signal("player_entity_created", player, is_locally_controlled)
 
 	var network_rep = player.get_node("NetworkReplication")
 	return network_rep

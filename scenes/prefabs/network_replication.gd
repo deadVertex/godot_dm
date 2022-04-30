@@ -69,13 +69,8 @@ func set_initial_state(initial_state) -> void:
 		EntityType.PLAYER:
 			_body.global_transform.origin = initial_state["position"]
 
-			if initial_state.has("is_locally_controlled"):
-				_body.set_locally_controlled(true)
-
-				# Registration with player command collector
-				var cmd_generator = _bod.get_node("PlayerCommandGenerator")
-				cmd_generator.set_locally_controlled()
-
+			var locally_controlled = initial_state.has("is_locally_controlled")
+			_body.set_locally_controlled(locally_controlled)
 
 		EntityType.OTHER:
 			_root.global_transform.origin = initial_state["position"]
