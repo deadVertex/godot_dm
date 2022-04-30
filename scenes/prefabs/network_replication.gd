@@ -82,7 +82,8 @@ func get_state() -> Dictionary:
 		state = {
 			"position": _body.global_transform.origin,
 			"view_model_animation": _body.get_current_view_model_animation(),
-			"weapon": _body.get_active_weapon()
+			"weapon": _body.get_active_weapon(),
+			"view_angles": _body.get_view_angles(),
 		}
 
 	return state
@@ -92,6 +93,9 @@ func set_state(state) -> void:
 	# print("set_state: %s" % state)
 	if entity_type == EntityType.PLAYER:
 		_body.global_transform.origin = state["position"]
+		if not _body.is_locally_controlled():
+			_body.set_view_angles(state["view_angles"])
+
 		_view_model.set_weapon(state["weapon"])
 		_view_model.set_animation(state["view_model_animation"])
 

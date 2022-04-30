@@ -24,6 +24,7 @@ var _active_weapon: int = ViewModel.Weapon.UZI
 var _current_view_model_animation: int = ViewModel.ViewModelAnimation.IDLE
 var _weapons := {ViewModel.Weapon.UZI: true}
 var _previous_cmd: Dictionary = {}
+var _is_locally_controlled := false
 
 onready var head: Spatial = $Head
 onready var camera: Camera = $Head/Camera
@@ -36,8 +37,13 @@ func _ready():
 
 
 func set_locally_controlled(is_locally_controlled: bool) -> void:
+	_is_locally_controlled = is_locally_controlled
 	camera.current = is_locally_controlled
 	_body.visible = not is_locally_controlled
+
+
+func is_locally_controlled() -> bool:
+	return _is_locally_controlled
 
 
 func _get_movement_direction(cmd):

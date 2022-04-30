@@ -52,7 +52,8 @@ onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollecto
 # - Make shotgun semi auto [/]
 # - Test with multiple clients [x]
 # - Fix Player view angles are getting messed up with multiple clients [x]
-# - Able to see other players [ ]
+# - Able to see other players [x]
+#	- Replicate player y rotation [x]
 # - Able to kill other players [ ]
 
 
