@@ -1,6 +1,7 @@
 extends Node
 
 signal player_entity_created(player, is_locally_controlled)
+signal player_entity_destroyed(player, is_locally_controlled)
 
 const NetworkReplication = preload("res://scenes/prefabs/network_replication.gd")
 const EntityFactory = preload("res://scenes/entity_factory.gd")
@@ -123,6 +124,12 @@ func _delete_entity(id: int) -> void:
 	print("_delete_entity: %d" % id)
 	var entity = get_replicated_entity_by_id(id)
 	if entity:
+		if entity.entity_type == NetworkReplication.EntityType.PLAYER:
+			emit_signal(
+				"player_entity_destroyed", entity,
+				entity._body.is_locally_controlled()
+			)
+
 		_entities.erase(id)
 		entity.delete_entity()
 	else:

@@ -55,7 +55,7 @@ onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollecto
 # - Able to see other players [x]
 #	- Replicate player y rotation [x]
 # - Able to kill other players [x]
-# - Player respawning [ ]
+# - Player respawning [x]
 
 
 
@@ -89,6 +89,10 @@ func _ready() -> void:
 			"player_entity_created", self, "_on_player_entity_created"
 		)
 		assert(error == OK)
+		error = _replication_client.connect(
+			"player_entity_destroyed", self, "_on_player_entity_destroyed"
+		)
+		assert(error == OK)
 
 		if args["connect"]:
 			_on_connect_to_server("127.0.0.1", 18000)
@@ -120,6 +124,16 @@ func _on_player_entity_created(player: Player, is_locally_controlled: bool) -> v
 	)
 	if is_locally_controlled:
 		_player_input_collector.set_player_entity(player)
+
+
+func _on_player_entity_destroyed(player: Player, is_locally_controlled: bool) -> void:
+	print("_on_player_entity_destroyed: player %s is_locally_controlled: %s" %
+		[player, is_locally_controlled]
+	)
+	if is_locally_controlled:
+		# Request respawn
+		var request = {"type": "spawn_request"}
+		_network_transport.send_message_to_server(request)
 
 
 func _parse_cmdline_args(args: PoolStringArray) -> Dictionary:
