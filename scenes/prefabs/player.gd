@@ -15,6 +15,7 @@ export var gravity: float = -20.0
 export var friction: float = 8.0
 export var uzi_time_between_shots: float = 0.18
 export var shotgun_time_between_shots: float = 1.0
+export var health: int = 120
 
 var velocity: Vector3 = Vector3.ZERO
 
@@ -44,6 +45,13 @@ func set_locally_controlled(is_locally_controlled: bool) -> void:
 
 func is_locally_controlled() -> bool:
 	return _is_locally_controlled
+
+
+func apply_damage(amount: int) -> void:
+	print("apply_damage: self: %s amount: %d" % [self, amount])
+	health = health - amount
+	if health <= 0:
+		queue_free()
 
 
 func _get_movement_direction(cmd):
@@ -143,8 +151,9 @@ func _process_bullet(start: Vector3, end: Vector3, damage: float):
 		# print("emit_signal: bullet_impact")
 		emit_signal("bullet_impact", result["position"], result["normal"])
 
-		if collider is BeanBoi:
+		if collider.has_method("apply_damage"):
 			collider.apply_damage(damage)
+
 			#_spawn_blood_splatter_fx(
 			#collider, result["position"], result["normal"]
 			#)

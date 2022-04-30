@@ -54,7 +54,8 @@ onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollecto
 # - Fix Player view angles are getting messed up with multiple clients [x]
 # - Able to see other players [x]
 #	- Replicate player y rotation [x]
-# - Able to kill other players [ ]
+# - Able to kill other players [x]
+# - Player respawning [ ]
 
 
 
@@ -194,7 +195,7 @@ func _update_client() -> void:
 
 	# Collect player command
 	var cmd = _player_input_collector.build_player_command()
-	if not cmd.empty():
+	if cmd and not cmd.empty():
 		# Send player command
 		#print("Sending player command")
 		var message = {"type": "player_cmd", "data": cmd}

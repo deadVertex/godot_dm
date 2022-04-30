@@ -17,7 +17,7 @@ func set_player_entity(player: Player) -> void:
 func build_player_command() -> Dictionary:
 	var player_cmd = {}
 
-	if _player:
+	if is_instance_valid(_player):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 		var forward: float = 0.0
@@ -59,5 +59,5 @@ func build_player_command() -> Dictionary:
 
 func _unhandled_input(event) -> void:
 	if event is InputEventMouseMotion:
-		if _player:
+		if is_instance_valid(_player):
 			_player.handle_camera_rotation(event)
