@@ -39,7 +39,7 @@ onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollecto
 #   it to the player entities on the clients [x]
 # - Deployment automation [x]
 # - Make sure we are using types everywhere! [x]
-# - Unit tests! [ ]
+# - Unit tests! [x]
 # - Buffer player commands?
 # - Multiplayer shooting [x]
 # - Multiple weapons (shotgun) [x]
@@ -56,6 +56,11 @@ onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollecto
 #	- Replicate player y rotation [x]
 # - Able to kill other players [x]
 # - Player respawning [x]
+# - Bots? [ ]
+#	- W+M1 player command generator [ ]
+#	- Navmesh driven player command generator [ ]
+#	- Aiming system [ ]
+# - Weapon pickups respawn [ ]
 
 
 
@@ -72,6 +77,7 @@ func _ready() -> void:
 
 		_network_transport.start_server(DEFAULT_PORT, DEFAULT_MAX_CLIENTS)
 		_load_map()
+		_spawn_bot()
 	else:
 		var error = _network_transport.connect(
 			"connection_accepted", self, "_on_connection_accepted"
@@ -214,3 +220,17 @@ func _update_client() -> void:
 		#print("Sending player command")
 		var message = {"type": "player_cmd", "data": cmd}
 		_network_transport.send_message_to_server(message)
+
+
+func _spawn_bot() -> void:
+	print("_spawn_bot")
+	var player = _player_spawner.spawn_player()
+
+	# Connect new player entity to command router
+	var cmd_receiver = player.get_node("PlayerCommandReceiver")
+	assert(cmd_receiver)
+	cmd_receiver.enabled = false
+
+	var test_brain = player.get_node("TestBrain")
+	assert(test_brain)
+	test_brain.enabled = true

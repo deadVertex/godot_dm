@@ -1,9 +1,10 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://scenes/prefabs/player.gd" type="Script" id=1]
 [ext_resource path="res://assets/meshes/kenny_nl_weapon_pack/uziLong.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://assets/meshes/kenny_nl_weapon_pack/shotgun.obj" type="ArrayMesh" id=3]
 [ext_resource path="res://scenes/prefabs/network_replication.gd" type="Script" id=4]
+[ext_resource path="res://scenes/prefabs/test_brain.gd" type="Script" id=5]
 [ext_resource path="res://scenes/prefabs/player_command_receiver.gd" type="Script" id=6]
 [ext_resource path="res://scenes/prefabs/view_model.gd" type="Script" id=7]
 
@@ -313,3 +314,7 @@ player_path = NodePath("..")
 script = ExtResource( 4 )
 body_path = NodePath("..")
 view_model_path = NodePath("../Head/ViewModel")
+
+[node name="TestBrain" type="Node" parent="."]
+script = ExtResource( 5 )
+player_path = NodePath("..")
