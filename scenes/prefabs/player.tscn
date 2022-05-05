@@ -189,7 +189,7 @@ albedo_color = Color( 0.184314, 0.184314, 0.184314, 1 )
 [sub_resource type="CubeMesh" id=5]
 material = SubResource( 4 )
 
-[node name="Player" type="KinematicBody"]
+[node name="Player" type="KinematicBody" groups=["players"]]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource( 1 )
@@ -318,3 +318,8 @@ view_model_path = NodePath("../Head/ViewModel")
 [node name="TestBrain" type="Node" parent="."]
 script = ExtResource( 5 )
 player_path = NodePath("..")
+
+[node name="TestBrainTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="TestBrainTimer" to="TestBrain" method="_on_TestBrainTimer_timeout"]

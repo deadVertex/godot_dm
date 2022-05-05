@@ -57,10 +57,12 @@ onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollecto
 # - Able to kill other players [x]
 # - Player respawning [x]
 # - Bots? [ ]
-#	- W+M1 player command generator [ ]
+#	- W+M1 player command generator [x]
 #	- Navmesh driven player command generator [ ]
 #	- Aiming system [ ]
 # - Weapon pickups respawn [ ]
+# - Properly encapsulate player class so no external code is directly accessing
+#   its child nodes
 
 
 
