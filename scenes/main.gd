@@ -58,11 +58,13 @@ onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollecto
 # - Player respawning [x]
 # - Bots? [ ]
 #	- W+M1 player command generator [x]
-#	- Navmesh driven player command generator [ ]
+#	- Navmesh driven player command generator [x]
 #	- Aiming system [ ]
+#	- Replace test brain [ ]
 # - Weapon pickups respawn [ ]
 # - Properly encapsulate player class so no external code is directly accessing
-#   its child nodes
+#   its child nodes [ ]
+# - Upgrade to new godot 3.5 beta [ ]
 
 
 

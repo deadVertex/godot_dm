@@ -271,6 +271,7 @@ func test_replication_client_deletes_entity() -> void:
 
 	var network_rep = double(NetworkReplication).new()
 	stub(network_rep, "get_id").to_return(1)
+	network_rep.entity_type = NetworkReplication.EntityType.OTHER
 	replication_client.register_entity(1, network_rep)
 
 	# When we receive an delete snapshot

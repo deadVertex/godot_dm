@@ -124,6 +124,7 @@ func _delete_entity(id: int) -> void:
 	print("_delete_entity: %d" % id)
 	var entity = get_replicated_entity_by_id(id)
 	if entity:
+		# TODO: Ewww
 		if entity.entity_type == NetworkReplication.EntityType.PLAYER:
 			emit_signal(
 				"player_entity_destroyed", entity,

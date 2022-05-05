@@ -15,10 +15,11 @@ var _path_node := 0
 onready var _player: Player = get_node(player_path)
 
 func _ready() -> void:
-	# Get navigation node
-	var navigation_nodes = get_tree().get_nodes_in_group("navigation")
-	assert(navigation_nodes.size() == 1)
-	_navigation_node = navigation_nodes.front()
+	if enabled:
+		# Get navigation node
+		var navigation_nodes = get_tree().get_nodes_in_group("navigation")
+		assert(navigation_nodes.size() == 1)
+		_navigation_node = navigation_nodes.front()
 
 
 func find_target() -> Player:
