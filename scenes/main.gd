@@ -8,6 +8,7 @@ const PlayerCommandRouter = preload("res://scenes/player_command_router.gd")
 const WeaponPickupSpawner = preload("res://scenes/weapon_pickup_spawner.gd")
 const PlayerInputCollector = preload("res://scenes/player_input_collector.gd")
 const Player = preload("res://scenes/prefabs/player.gd")
+const BotSpawner = preload("res://scenes/bot_spawner.gd")
 
 const VERSION_MAJOR: int = 0
 const VERSION_MINOR: int = 1
@@ -15,6 +16,9 @@ const VERSION_PATCH: int = 0
 
 const DEFAULT_PORT: int = 18000
 const DEFAULT_MAX_CLIENTS: int = 8
+
+# TODO: Up this number once we fix bots spawning inside each other
+const BOT_COUNT = 1
 
 export var map: PackedScene
 
@@ -30,6 +34,7 @@ onready var _replication_client: ReplicationClient = $ReplicationClient
 onready var _player_command_router: PlayerCommandRouter = $PlayerCommandRouter
 onready var _weapon_pickup_spawner: WeaponPickupSpawner = $WeaponPickupSpawner
 onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollector
+onready var _bot_spawner: BotSpawner = $BotSpawner
 
 # TODO List
 # - System for clients to request player spawns [x]
@@ -61,6 +66,11 @@ onready var _player_input_collector: PlayerInputCollector = $PlayerInputCollecto
 #	- Navmesh driven player command generator [x]
 #	- Aiming system [ ]
 #	- Replace test brain [ ]
+#	- System for spawning bots [x] (I want to specify a number of bots and have them spawn into the game)
+#	- A way for bots to identify targets [ ]
+#	- System for managing path finding requests (for rate limiting) [ ]
+#	- Bot respawning [ ]
+#	- Fix bots/players spawning inside each other [ ]
 # - Weapon pickups respawn [ ]
 # - Properly encapsulate player class so no external code is directly accessing
 #   its child nodes [ ]
@@ -81,7 +91,8 @@ func _ready() -> void:
 
 		_network_transport.start_server(DEFAULT_PORT, DEFAULT_MAX_CLIENTS)
 		_load_map()
-		_spawn_bot()
+		_bot_spawner.player_spawner = _player_spawner
+		_bot_spawner.spawn_bots(BOT_COUNT)
 	else:
 		var error = _network_transport.connect(
 			"connection_accepted", self, "_on_connection_accepted"
@@ -224,17 +235,3 @@ func _update_client() -> void:
 		#print("Sending player command")
 		var message = {"type": "player_cmd", "data": cmd}
 		_network_transport.send_message_to_server(message)
-
-
-func _spawn_bot() -> void:
-	print("_spawn_bot")
-	var player = _player_spawner.spawn_player()
-
-	# Connect new player entity to command router
-	var cmd_receiver = player.get_node("PlayerCommandReceiver")
-	assert(cmd_receiver)
-	cmd_receiver.enabled = false
-
-	var test_brain = player.get_node("TestBrain")
-	assert(test_brain)
-	test_brain.enabled = true

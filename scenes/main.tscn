@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scenes/main.gd" type="Script" id=1]
 [ext_resource path="res://scenes/maps/TestMap.tscn" type="PackedScene" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://scenes/weapon_pickup_spawner.gd" type="Script" id=13]
 [ext_resource path="res://scenes/prefabs/weapon_pickup.tscn" type="PackedScene" id=14]
 [ext_resource path="res://scenes/player_input_collector.gd" type="Script" id=15]
+[ext_resource path="res://scenes/bot_spawner.gd" type="Script" id=16]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -60,3 +61,6 @@ weapon_pickup_scene = ExtResource( 14 )
 
 [node name="PlayerInputCollector" type="Node" parent="."]
 script = ExtResource( 15 )
+
+[node name="BotSpawner" type="Node" parent="."]
+script = ExtResource( 16 )

@@ -4,22 +4,22 @@ const Player = preload("res://scenes/prefabs/player.gd")
 const ViewModel = preload("res://scenes/prefabs/view_model.gd")
 
 export(NodePath) var player_path
-export(bool) var enabled = false
 
 var _y_rotation := 0.0
 var _navigation_node: Navigation
 var _target: Player
 var _path := []
 var _path_node := 0
+var _enabled := false
 
 onready var _player: Player = get_node(player_path)
 
-func _ready() -> void:
-	if enabled:
-		# Get navigation node
-		var navigation_nodes = get_tree().get_nodes_in_group("navigation")
-		assert(navigation_nodes.size() == 1)
-		_navigation_node = navigation_nodes.front()
+func enable() -> void:
+	# Get navigation node
+	var navigation_nodes = get_tree().get_nodes_in_group("navigation")
+	assert(navigation_nodes.size() == 1)
+	_navigation_node = navigation_nodes.front()
+	_enabled = true
 
 
 func find_target() -> Player:
@@ -34,7 +34,7 @@ func find_target() -> Player:
 
 
 func _physics_process(delta: float) -> void:
-	if enabled:
+	if _enabled:
 		if _target:
 			_y_rotation += delta * PI
 			var player_cmd = {
@@ -73,7 +73,7 @@ func move_to(target_pos: Vector3) -> void:
 
 func _on_TestBrainTimer_timeout():
 	print("_on_TestBrainTimer_timeout")
-	if enabled:
+	if _enabled:
 		if not _target:
 			_target = find_target()
 		if _target:
