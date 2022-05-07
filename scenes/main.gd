@@ -17,8 +17,7 @@ const VERSION_PATCH: int = 0
 const DEFAULT_PORT: int = 18000
 const DEFAULT_MAX_CLIENTS: int = 8
 
-# TODO: Up this number once we fix bots spawning inside each other
-const BOT_COUNT = 1
+const BOT_COUNT = 3
 
 export var map: PackedScene
 
@@ -70,7 +69,7 @@ onready var _bot_spawner: BotSpawner = $BotSpawner
 #	- A way for bots to identify targets [ ]
 #	- System for managing path finding requests (for rate limiting) [ ]
 #	- Bot respawning [ ]
-#	- Fix bots/players spawning inside each other [ ]
+#	- Fix bots/players spawning inside each other [x] (Replace current system with Area.get_overlapping_bodies()!)
 # - Weapon pickups respawn [ ]
 # - Properly encapsulate player class so no external code is directly accessing
 #   its child nodes [ ]
